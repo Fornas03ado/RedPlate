@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">RedPlate</string>
+    <string name="app_name" translatable="false">RedPlate</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -10,4 +10,21 @@
     <string name="search_btn_desc">Search button</string>
     <string name="profile_btn_desc">Profile button</string>
     <string name="home">Home</string>
+    <string name="create_account">Create account</string>
+    <string name="username">Username</string>
+    <string name="input_font" translatable="false">sans-serif-condensed</string>
+    <string name="title_2_font" translatable="false">sans-serif</string>
+    <string name="title_1_font" translatable="false">sans-serif-medium</string>
+    <string name="sign_in">Sign in</string>
+    <string name="create">Create</string>
+    <string name="password">Password</string>
+    <string name="repeat_your_password">Repeat your password</string>
+    <string name="email">E-mail</string>
+    <string name="go_to_login_text">Already have an account?\nGo to log in</string>
+    <string name="go_to_create_account_text">Don\'t have an account?\nSign in</string>
+    <string name="log_in">Log in</string>
+    <string name="continue_text">Continue</string>
+    <string name="forgot_password_text">Forgot your password?</string>
+    <string name="or">or</string>
+    <string name="log_in_with_google">Log in with Google</string>
 </resources>

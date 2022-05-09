@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@id/login_fragment">
+
+    <fragment
+        android:id="@+id/login_fragment"
+        android:name="com.aasoftware.redplate.ui.createAccountLogin.LoginFragment"
+        tools:layout="@layout/login_fragment" >
+        <action
+            android:id="@+id/action_login_fragment_to_create_account_fragment"
+            app:destination="@id/create_account_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_account_fragment"
+        android:name="com.aasoftware.redplate.ui.createAccountLogin.CreateAccountFragment"
+        tools:layout="@layout/create_account_fragment" >
+        <action
+            android:id="@+id/action_create_account_fragment_to_login_fragment"
+            app:destination="@id/login_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/home_fragment"
+        android:name="com.aasoftware.redplate.ui.home.HomeFragment"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/search_fragment"
+        android:name="com.aasoftware.redplate.ui.search.SearchFragment"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/profile_overview_fragment"
+        android:name="com.aasoftware.redplate.ui.profile.overview.ProfileOverviewFragment"
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profile_overview_fragment_to_editProfileFragment"
+            app:destination="@id/editProfileFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/editProfileFragment"
+        android:name="com.aasoftware.redplate.ui.profile.edit.EditProfileFragment"
+        tools:layout="@layout/edit_profile_fragment" />
+</navigation>

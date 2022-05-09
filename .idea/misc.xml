@@ -3,18 +3,34 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/background_image.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/edittext_focused.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/edittext_unfocused.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/input_bg.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-notnight/background_image.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background.xml" value="0.171" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background_image.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/button_create_login_bg.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/edittext_focused.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/edittext_unfocused.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_add_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_add_24.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_google.xml" value="0.2115" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_home_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_home_24.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_icons8_logo_de_google.xml" value="0.1875" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_person_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_person_24.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_search_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_search_24.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_bg.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/create_account_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/edit_profile_fragment.xml" value="0.16018518518518518" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_dashboard.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_notifications.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/login_fragment.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25364583333333335" />
       </map>
     </option>

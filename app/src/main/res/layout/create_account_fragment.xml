@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_image"
+    android:clickable="false"
+    android:orientation="vertical"
+    tools:context=".ui.createAccountLogin.CreateAccountFragment">
+
+    <TextView
+        android:id="@+id/redplate_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_xhigh"
+        android:fontFamily="@string/title_1_font"
+        android:text="@string/app_name"
+        android:textColor="@color/title_color"
+        android:textSize="@dimen/title_1" />
+
+    <TextView
+        android:id="@+id/create_account_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_high"
+        android:fontFamily="@string/title_2_font"
+        android:text="@string/create_account"
+        android:textColor="@color/title_color"
+        android:textSize="@dimen/title_2" />
+
+    <EditText
+        android:id="@+id/username_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:background="@drawable/input_bg"
+        android:fontFamily="@string/input_font"
+        android:hint="@string/username"
+        android:imeOptions="actionNext"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:paddingVertical="@dimen/input_edittext_padding"
+        android:paddingStart="@dimen/input_padding_start"
+        android:paddingEnd="@dimen/input_edittext_padding"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/input_hint_color"
+        android:textSize="@dimen/input_text_size"
+        tools:text="My username"/>
+
+    <EditText
+        android:id="@+id/email_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@drawable/input_bg"
+        android:fontFamily="@string/input_font"
+        android:hint="@string/email"
+        android:imeOptions="actionNext"
+        android:importantForAutofill="no"
+        android:inputType="textEmailAddress"
+        android:paddingVertical="@dimen/input_edittext_padding"
+        android:paddingStart="@dimen/input_padding_start"
+        android:paddingEnd="@dimen/input_edittext_padding"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/input_hint_color"
+        android:textSize="@dimen/input_text_size"
+        tools:text="adolfofornas2205@domain.es" />
+
+    <EditText
+        android:id="@+id/password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@drawable/input_bg"
+        android:fontFamily="@string/input_font"
+        android:hint="@string/password"
+        android:imeOptions="actionNext"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:paddingVertical="@dimen/input_edittext_padding"
+        android:paddingStart="@dimen/input_padding_start"
+        android:paddingEnd="@dimen/input_edittext_padding"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/input_hint_color"
+        android:textSize="@dimen/input_text_size"/>
+
+    <EditText
+        android:id="@+id/confirm_password_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:background="@drawable/input_bg"
+        android:fontFamily="@string/input_font"
+        android:hint="@string/repeat_your_password"
+        android:imeOptions="actionDone"
+        android:importantForAutofill="no"
+        android:inputType="textPassword"
+        android:paddingVertical="@dimen/input_edittext_padding"
+        android:paddingStart="@dimen/input_padding_start"
+        android:paddingEnd="@dimen/input_edittext_padding"
+        android:textColor="@color/input_text_color"
+        android:textColorHint="@color/input_hint_color"
+        android:textSize="@dimen/input_text_size"/>
+
+    <Button
+        android:id="@+id/create_account_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginHorizontal="@dimen/spacing_xhigh"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:background="@drawable/input_bg"
+        android:fontFamily="@string/input_font"
+        android:paddingVertical="@dimen/button_padding_vertical"
+        android:text="@string/create"
+        android:textAllCaps="false"
+        android:textColor="@color/button_text_color"
+        android:textSize="@dimen/button_text_size" />
+
+    <TextView
+        android:id="@+id/go_to_login_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/spacing_medium"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="@dimen/spacing_small"
+        android:text="@string/go_to_login_text"
+        android:textAlignment="center"
+        android:textColor="@color/input_hint_color"
+        android:textSize="@dimen/input_text_size"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
