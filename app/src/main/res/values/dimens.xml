@@ -10,11 +10,11 @@
     <dimen name="spacing_high">32dp</dimen>
     <dimen name="spacing_xhigh">48dp</dimen>
     <dimen name="spacing_xxhigh">64dp</dimen>
-    <dimen name="title_1">48sp</dimen>
-    <dimen name="title_2">34sp</dimen>
+    <dimen name="title_1">52sp</dimen>
+    <dimen name="title_2">30sp</dimen>
     <dimen name="input_stroke_width_unfocused">1dp</dimen>
-    <dimen name="input_stroke_width_focused">4dp</dimen>
-    <dimen name="input_corner_radius">26dp</dimen>
+    <dimen name="input_stroke_width_focused">2dp</dimen>
+    <dimen name="input_corner_radius">20dp</dimen>
     <dimen name="input_edittext_padding">14dp</dimen>
     <dimen name="input_text_size">18sp</dimen>
     <dimen name="button_text_size">20sp</dimen>

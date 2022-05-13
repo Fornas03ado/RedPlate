@@ -11,18 +11,24 @@
     <color name="primaryColor">#222222</color>
     <color name="primaryLightColor">#474747</color>
     <color name="primaryDarkColor">#141414</color>
-    <color name="secondaryColor">#FF1313</color>
+    <color name="secondaryColor">#FF2626</color>
     <color name="secondaryLightColor">#FF8A8A</color>
     <color name="secondaryDarkColor">#520000</color>
     <color name="primaryTextColor">#fcfcfc</color>
     <color name="secondaryTextColor">#000000</color>
 
-    <color name="background_color">#F4F4F4</color>
+    <color name="background_color">#FAFAFA</color>
 
-    <color name="title_color">@color/primaryColor</color>
-    <color name="input_text_color">@color/primaryColor</color>
-    <color name="input_hint_color">@color/primaryLightColor</color>
-    <color name="input_stroke_color">#171717</color>
-    <color name="input_background_color">@color/background_color</color>
+    <color name="title_color">#353535</color>
+    <color name="input_text_color">#353535</color>
+    <color name="input_hint_color">#969696</color>
+    <color name="input_stroke_color">#C5C5C5</color>
+    <color name="input_background_color">#FBFBFB</color>
     <color name="button_text_color">@color/background_color</color>
+    <color name="button_background_color">#5F5F5F</color>
+    <color name="label_hint_color">#626262</color>
+    <color name="panel_color">#FDFDFD</color>
+    <color name="error_color">#FF5555</color>
+    <color name="input_drawable_tint">@color/input_hint_color</color>
+    <color name="cursor_color">#191919</color>
 </resources>
