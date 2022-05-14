@@ -11,7 +11,16 @@
         tools:layout="@layout/login_fragment" >
         <action
             android:id="@+id/action_login_fragment_to_create_account_fragment"
-            app:destination="@id/create_account_fragment" />
+            app:destination="@id/create_account_fragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/login_fragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_login_fragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/login_fragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
@@ -20,30 +29,20 @@
         tools:layout="@layout/create_account_fragment" >
         <action
             android:id="@+id/action_create_account_fragment_to_login_fragment"
-            app:destination="@id/login_fragment" />
+            app:destination="@id/login_fragment"
+            app:launchSingleTop="true"
+            app:popUpTo="@id/create_account_fragment"
+            app:popUpToInclusive="true" />
     </fragment>
-
     <fragment
-        android:id="@+id/home_fragment"
-        android:name="com.aasoftware.redplate.ui.home.HomeFragment"
-        tools:layout="@layout/fragment_home" />
-
-    <fragment
-        android:id="@+id/search_fragment"
-        android:name="com.aasoftware.redplate.ui.search.SearchFragment"
-        tools:layout="@layout/fragment_search" />
-
-    <fragment
-        android:id="@+id/profile_overview_fragment"
-        android:name="com.aasoftware.redplate.ui.profile.overview.ProfileOverviewFragment"
-        tools:layout="@layout/fragment_profile" >
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.aasoftware.redplate.ui.createAccountLogin.ForgotPasswordFragment"
+        android:label="fragment_forgot_password"
+        tools:layout="@layout/fragment_forgot_password" >
         <action
-            android:id="@+id/action_profile_overview_fragment_to_editProfileFragment"
-            app:destination="@id/editProfileFragment" />
+            android:id="@+id/action_forgotPasswordFragment_to_login_fragment"
+            app:destination="@id/login_fragment"
+            app:launchSingleTop="true" />
     </fragment>
 
-    <fragment
-        android:id="@+id/editProfileFragment"
-        android:name="com.aasoftware.redplate.ui.profile.edit.EditProfileFragment"
-        tools:layout="@layout/edit_profile_fragment" />
 </navigation>

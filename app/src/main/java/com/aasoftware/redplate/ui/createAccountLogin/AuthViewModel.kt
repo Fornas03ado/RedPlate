@@ -2,8 +2,6 @@ package com.aasoftware.redplate.ui.createAccountLogin
 
 import android.content.res.Resources
 import android.util.Log
-import androidx.annotation.OptIn
-import androidx.appcompat.content.res.AppCompatResources
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,54 +14,76 @@ import com.aasoftware.redplate.util.Credentials.isVaildEmail
 import com.aasoftware.redplate.util.Credentials.isValidPassword
 import com.aasoftware.redplate.util.Credentials.isValidUsername
 import com.aasoftware.redplate.util.asUser
-import com.google.firebase.auth.FirebaseUser
 
 /** Shared viewModel for the authentication process: [CreateAccountFragment],
  * [LoginFragment] and [ForgotPasswordFragment] */
 class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
 
+    /** Private mutable liva data for [uiAuthState] */
+    private val _uiAuthState = MutableLiveData(AuthenticationState(NONE, null))
     /** The current status of the login or create account operations:
-    * [AuthenticationProgress.NONE] -> When no process is in progress
-     * [AuthenticationProgress.IN_PROGRESS] -> When auth has been requested and viewModel
+     * [AuthenticationProgress.NONE] -> When no process is in progress
      * is waiting for result
      * [AuthenticationProgress.ERROR] -> When auth finished with an error
      * [AuthenticationProgress.SUCCESS] -> When auth finished successfully
-    *  */
-    private val _uiAuthState = MutableLiveData(AuthenticationState(NONE, null))
-    /* Public immutable live data of  */
+     *  */
     val uiAuthState: LiveData<AuthenticationState> get() = _uiAuthState
+
+    /** Private mutable liva data for [loading] */
+    private val _loading = MutableLiveData(false)
+    /** Live data that represents whether the app is in loading state. It is,
+     * then, the loading dialog visibility */
+    val loading: LiveData<Boolean> get() = _loading
+
+    /** Private mutable liva data for [authFinished] */
+    private val _authFinished = MutableLiveData(false)
+    /** Whether authentication process has finished and activity is ready to navigate to
+     *  PresentationActivity */
+    val authFinished: LiveData<Boolean> get() = _authFinished
 
     /** Check if the user has previously logged in via Google services.
      * If not, launch the Google sign in intent */
     fun requestGoogleLogin(fragment: LoginFragment) {
-        authRepo.requestGoogleLogin(fragment)
+        authRepo.googleLogin(fragment)
     }
 
-    fun requestFirebaseLogin(email: String, password: String){
-        authRepo.requestFirebaseLogin()
+    /** Attempts a Firebase login with the given credentials */
+    fun requestFirebaseLogin(email: String, password: String) {
+        _loading.value = true
+        authRepo.firebaseLogin(email, password){ task ->
+            if (task.isSuccessful){
+                _uiAuthState.value = AuthenticationState(SUCCESS, null)
+            } else {
+                _uiAuthState.value = AuthenticationState(ERROR, task.exception)
+            }
+            _loading.value = false
+        }
     }
 
     /** Attempt to create account with the given parameters. The result will be sent to
      * [_uiAuthState] so that it can be observed via [uiAuthState] */
     fun createAccount(username: String, email: String, password: String){
-        authRepo.requestFirebaseCreateAccount(email, password){authTask ->
+        _loading.value = true
+        authRepo.firebaseCreateAccount(email, password){ authTask ->
             if (authTask.isSuccessful){
                 /* Account was created successfully */
                 val user = authRepo.firebaseUser()!!.asUser(username)
                 /* Upload the account to FirebaseFirestore. This might be a WorkManager task */
                 authRepo.uploadUser(user){ upload ->
                     if (upload.isSuccessful){
-                        _uiAuthState.value = AuthenticationState(SUCCESS, AuthResultDomain(user, null))
+                        _uiAuthState.value = AuthenticationState(SUCCESS, null)
                     } else {
                         deleteFirebaseUser(user)
-                        _uiAuthState.value = AuthenticationState(ERROR, AuthResultDomain(null, authTask.exception))
+                        _uiAuthState.value = AuthenticationState(ERROR, upload.exception)
                         Log.d("AuthViewModel", "Upload task error: ${upload.exception?.javaClass?.canonicalName}")
                     }
+                    _loading.value = false
                 }
             } else {
                 // Exception is FirebaseAuthUserCollisionException if an account with the given email already exists
                 Log.d("AuthViewModel", "Create task error: ${authTask.exception?.javaClass?.canonicalName}")
-                _uiAuthState.value = AuthenticationState(ERROR, AuthResultDomain(null, authTask.exception))
+                _uiAuthState.value = AuthenticationState(ERROR, authTask.exception)
+                _loading.value = false
             }
         }
     }
@@ -98,9 +118,28 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
                 AuthErrorType.PASSWORD_ERROR
             )
         }
-
         // All the fields are correct
         return null
+    }
+
+    /** Sends a reset email password to the given email via firebase */
+    fun recoverPassword(email: String) {
+        _loading.value = true
+        authRepo.sendRecoverPasswordEmail(email){ task ->
+            if (task.isSuccessful){
+                _uiAuthState.value = AuthenticationState(SUCCESS, null)
+            } else {
+                _uiAuthState.value = AuthenticationState(ERROR, task.exception)
+            }
+            _loading.value = false
+        }
+    }
+
+    /** Prepare to navigate to PresentationActivity */
+    fun onAuthenticationFinished() {
+        _loading.value = false
+        _uiAuthState.value = AuthenticationState(NONE, null)
+        _authFinished.value = true
     }
 
     /** Factory that builds [AuthViewModel] from an [AuthRepository] */

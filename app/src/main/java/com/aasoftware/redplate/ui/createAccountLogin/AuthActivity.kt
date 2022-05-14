@@ -1,19 +1,19 @@
 package com.aasoftware.redplate.ui.createAccountLogin
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.aasoftware.redplate.R
 import com.aasoftware.redplate.data.AuthRepository
-import com.aasoftware.redplate.data.remote.FirebaseAuthService
-import com.aasoftware.redplate.data.remote.GoogleAuthService
+import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.databinding.ActivityAuthBinding
+import com.aasoftware.redplate.ui.MainActivity
 
 class AuthActivity : AppCompatActivity(){
 
     private lateinit var binding: ActivityAuthBinding
     private val viewModel: AuthViewModel by viewModels{
-        AuthViewModel.Factory(AuthRepository(FirebaseAuthService(), GoogleAuthService()))
+        AuthViewModel.Factory(AuthRepository(AuthService()))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,6 +22,12 @@ class AuthActivity : AppCompatActivity(){
         // TODO: Check if user is logged in. In that case, navigate to PresentationActivity
         binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        viewModel.authFinished.observe(this){
+            if (it){
+                startActivity(Intent(this, MainActivity::class.java))
+            }
+        }
 
         /*val navController = findNavController(R.id.nav_host_fragment_activity_main)
         /* Passing each menu ID as a set of Ids because each

@@ -33,6 +33,7 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_search_24.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_bg.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_panel_bg.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/loading_dialog_background.xml" value="0.228" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/shape_rect.xml" value="0.107" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_presentation.xml" value="0.25364583333333335" />
@@ -43,6 +44,7 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_forgot_password.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_notifications.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/loading_dialog.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/login_fragment.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25364583333333335" />
       </map>
