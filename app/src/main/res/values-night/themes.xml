@@ -14,4 +14,9 @@
         <item name="backgroundColor">@color/background_color</item>
         <item name="fontFamily">sans-serif-condensed-light</item>
     </style>
+
+    <style name="ThemeOverlay.RedPlate.FullscreenContainer" parent="">
+        <item name="fullscreenBackgroundColor">@color/light_blue_900</item>
+        <item name="fullscreenTextColor">@color/light_blue_A400</item>
+    </style>
 </resources>

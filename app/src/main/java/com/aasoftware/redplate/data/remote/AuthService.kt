@@ -9,8 +9,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.EmailAuthProvider
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
 class AuthService {
@@ -31,10 +31,8 @@ class AuthService {
     fun currentUser() = auth.currentUser
 
     /** Removes last FirebaseAuth user that signed in this device if it exists */
-    fun removeLastUserFromFirebase(user: User) {
-        if (currentUser()?.uid == user.id){
-            currentUser()?.delete()
-        }
+    fun removeUserFromFirebase(user: FirebaseUser) {
+        user.delete()
     }
 
     /** Upload [user] to the Firestore database */
@@ -50,7 +48,7 @@ class AuthService {
     }
 
     /** Send a reset password email to the given [email] if it exists */
-    fun sendRecoverPasswordEmail(email: String, onComplete: OnCompleteListener<Void>) {
+    fun sendPasswordResetEmail(email: String, onComplete: OnCompleteListener<Void>) {
         auth.sendPasswordResetEmail(email).addOnCompleteListener(onComplete)
     }
 
@@ -60,7 +58,6 @@ class AuthService {
         /* Check for existing Google Sign In account, if the user is already signed in
         the GoogleSignInAccount will be non-null. Otherwise, the method will return null */
         GoogleSignIn.getLastSignedInAccount(fragment.requireContext())
-
 
     /** Launch the google sign in intent */
     fun requestGoogleLogIn(fragment: Fragment){
@@ -73,9 +70,9 @@ class AuthService {
         /* Build a GoogleSignInClient with the options specified by gso. */
         val googleSignInClient = GoogleSignIn.getClient(fragment.requireContext(), gso);
 
-        /* Start the google sign in intent, which displays a menu with all the accounts */
+        /* Send the google sign in intent, which displays a menu with all the accounts */
         val signInIntent: Intent = googleSignInClient.signInIntent
-        fragment.startActivityForResult(signInIntent, 0)
+        fragment.startActivityForResult(signInIntent, FirebaseConstants.GOOGLE_LOGIN_RC)
     }
 
 }

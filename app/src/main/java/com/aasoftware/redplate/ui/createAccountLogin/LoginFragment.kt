@@ -4,14 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.IdRes
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.aasoftware.redplate.R
 import com.aasoftware.redplate.data.AuthRepository
 import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.databinding.LoginFragmentBinding
+import com.aasoftware.redplate.domain.AuthErrorType
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.ui.LoadingDialogFragment
 import com.aasoftware.redplate.util.Credentials.isVaildEmail
@@ -22,6 +25,7 @@ import com.google.android.material.snackbar.Snackbar
 
 
 // TODO: Handle animations
+// TODO: Read email from args
 class LoginFragment : Fragment() {
 
     /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
@@ -91,11 +95,11 @@ class LoginFragment : Fragment() {
             }
 
             goToCreateAccountButton.setOnClickListener {
-                findNavController().navigate(R.id.action_login_fragment_to_create_account_fragment)
+                navigateWithActionId(R.id.action_login_fragment_to_create_account_fragment)
             }
 
             forgotPasswordButton.setOnClickListener {
-                findNavController().navigate(R.id.action_login_fragment_to_forgotPasswordFragment)
+                navigateWithActionId(R.id.action_login_fragment_to_forgotPasswordFragment)
             }
 
             emailInput.doOnTextChanged{ _, _, _, _ ->
@@ -114,6 +118,30 @@ class LoginFragment : Fragment() {
                     error = false
                 }
             }
+        }
+    }
+
+    /** Clear layout and navigate via a provided action id */
+    private fun navigateWithActionId(@IdRes navAction: Int, args: Bundle? = null) {
+        clearLayout()
+        findNavController().navigate(navAction, args)
+    }
+
+    /** Remove any error message, restore input texts default state: default drawables and empty text */
+    private fun clearLayout() {
+        with(binding){
+            // Make sure the input text drawables are default
+            if(error){
+                errorSnackbar?.dismiss()
+                emailInput.defaultDrawables(R.drawable.ic_email_24)
+                passwordInput.defaultDrawables(R.drawable.ic_key_24)
+                error = false
+            }
+
+            // Empty the input text
+            emailInput.setText("")
+            passwordInput.setText("")
+            loadingDialog?.dismiss()
         }
     }
 

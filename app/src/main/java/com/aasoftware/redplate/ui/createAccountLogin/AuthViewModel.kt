@@ -2,10 +2,7 @@ package com.aasoftware.redplate.ui.createAccountLogin
 
 import android.content.res.Resources
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.*
 import com.aasoftware.redplate.R
 import com.aasoftware.redplate.data.AuthRepository
 import com.aasoftware.redplate.domain.*
@@ -13,7 +10,9 @@ import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.util.Credentials.isVaildEmail
 import com.aasoftware.redplate.util.Credentials.isValidPassword
 import com.aasoftware.redplate.util.Credentials.isValidUsername
+import com.aasoftware.redplate.util.DEBUG_TAG
 import com.aasoftware.redplate.util.asUser
+import com.google.firebase.auth.FirebaseUser
 
 /** Shared viewModel for the authentication process: [CreateAccountFragment],
  * [LoginFragment] and [ForgotPasswordFragment] */
@@ -22,7 +21,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     /** Private mutable liva data for [uiAuthState] */
     private val _uiAuthState = MutableLiveData(AuthenticationState(NONE, null))
     /** The current status of the login or create account operations:
-     * [AuthenticationProgress.NONE] -> When no process is in progress
+     * [AuthenticationProgress.NONE] -> When no process is in progress or
      * is waiting for result
      * [AuthenticationProgress.ERROR] -> When auth finished with an error
      * [AuthenticationProgress.SUCCESS] -> When auth finished successfully
@@ -36,10 +35,11 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     val loading: LiveData<Boolean> get() = _loading
 
     /** Private mutable liva data for [authFinished] */
-    private val _authFinished = MutableLiveData(false)
+    private val _authFinished = MutableLiveData<Boolean?>(null)
     /** Whether authentication process has finished and activity is ready to navigate to
-     *  PresentationActivity */
-    val authFinished: LiveData<Boolean> get() = _authFinished
+     *  PresentationActivity .
+     *  null when logged state is being checked at the beginning*/
+    val authFinished: LiveData<Boolean?> get() = _authFinished
 
     /** Check if the user has previously logged in via Google services.
      * If not, launch the Google sign in intent */
@@ -67,18 +67,23 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         authRepo.firebaseCreateAccount(email, password){ authTask ->
             if (authTask.isSuccessful){
                 /* Account was created successfully */
-                val user = authRepo.firebaseUser()!!.asUser(username)
-                /* Upload the account to FirebaseFirestore. This might be a WorkManager task */
+                val firebaseUser = authRepo.firebaseUser()!!
+                val user = firebaseUser.asUser(username)
+                /* Upload the account to Firebase Firestore. This might be a WorkManager task
+                 as it must be completed */
                 authRepo.uploadUser(user){ upload ->
                     if (upload.isSuccessful){
                         _uiAuthState.value = AuthenticationState(SUCCESS, null)
                     } else {
-                        deleteFirebaseUser(user)
+                        deleteFirebaseUser(firebaseUser)
                         _uiAuthState.value = AuthenticationState(ERROR, upload.exception)
                         Log.d("AuthViewModel", "Upload task error: ${upload.exception?.javaClass?.canonicalName}")
                     }
                     _loading.value = false
                 }
+
+                // Send a verification email
+                firebaseUser.sendEmailVerification()
             } else {
                 // Exception is FirebaseAuthUserCollisionException if an account with the given email already exists
                 Log.d("AuthViewModel", "Create task error: ${authTask.exception?.javaClass?.canonicalName}")
@@ -89,7 +94,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     }
 
     /** Deletes the given user from Firebase Authentication */
-    private fun deleteFirebaseUser(user: User) = authRepo.removeLastFirebaseUser(user)
+    private fun deleteFirebaseUser(user: FirebaseUser) = authRepo.removeFirebaseUser(user)
 
     /** Restore the [_uiAuthState] value to show [NONE] after the result has been processed */
     fun onResultReceived(){
@@ -122,7 +127,8 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         return null
     }
 
-    /** Sends a reset email password to the given email via firebase */
+    /** Sends a password reset email to the given email via firebase. Updates [uiAuthState]
+     * with the result*/
     fun recoverPassword(email: String) {
         _loading.value = true
         authRepo.sendRecoverPasswordEmail(email){ task ->
@@ -135,14 +141,23 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         }
     }
 
-    /** Prepare to navigate to PresentationActivity */
+    /** Notify that authentication process has finished via [authFinished] */
     fun onAuthenticationFinished() {
         _loading.value = false
         _uiAuthState.value = AuthenticationState(NONE, null)
         _authFinished.value = true
     }
 
-    /** Factory that builds [AuthViewModel] from an [AuthRepository] */
+    /** Helper function for [checkLoggedIn]. Returns if any user is logged in */
+    private fun loggedIn(): Boolean = authRepo.loggedIn()
+
+    /** Checks if any user is currently logged in Firebase. Update [authFinished] consequently */
+    fun checkLoggedIn() {
+        _authFinished.value = loggedIn()
+        Log.d(DEBUG_TAG, "User logged in: ${loggedIn()}")
+    }
+
+    /** Factory that builds [AuthViewModel] given an [AuthRepository] */
     class Factory(private val authRepo: AuthRepository) : ViewModelProvider.Factory{
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {

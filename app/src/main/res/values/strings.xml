@@ -32,7 +32,7 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="email_error_text">Email introduced is not valid. Check any errors and try again.</string>
-    <string name="password_error_text">Password must contain a numbers, lower case, upper case, special character and at least 8 characters.</string>
+    <string name="password_error_text">Password must contain a number, lower case, upper case, special character and at least 8 characters.</string>
     <string name="password_match_error_text">Passwords don\'t match. Please, check them and try again.</string>
     <string name="create_account_error_msg">Error creating the account. Please try again later</string>
     <string name="recover_password_text">Recover your password</string>
@@ -46,4 +46,8 @@
     <string name="go_back">Go back</string>
     <string name="invalid_credentials">Invalid credentials. Consider recovering your password.</string>
     <string name="loading">Loading…</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="create_account_banner_message">The email you introduced is already registered.</string>
+    <string name="dismiss">Dismiss</string>
 </resources>

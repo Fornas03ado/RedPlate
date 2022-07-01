@@ -11,6 +11,7 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-notnight/background_image.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background.xml" value="0.171" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background_image.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/banner_background.xml" value="0.228" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/button_create_login_bg.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/cursor_drawable.xml" value="0.107" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/edittext_focused.xml" value="0.1985" />
@@ -19,6 +20,7 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_add_24.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_error_24.xml" value="0.185" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_google.xml" value="0.2115" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_gym_near_svgrepo_com.xml" value="0.1" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_home_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_home_24.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_icons8_logo_de_google.xml" value="0.1875" />
@@ -35,15 +37,17 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_panel_bg.xml" value="0.259" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/loading_dialog_background.xml" value="0.228" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/shape_rect.xml" value="0.107" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_auth.xml" value="0.13645833333333332" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_presentation.xml" value="0.25364583333333335" />
-        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/create_account_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/create_account_fragment.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/cursor_drawable.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/edit_profile_fragment.xml" value="0.16018518518518518" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_dashboard.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_forgot_password.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_notifications.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_splash.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/loading_dialog.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/login_fragment.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/menu/bottom_nav_menu.xml" value="0.25364583333333335" />

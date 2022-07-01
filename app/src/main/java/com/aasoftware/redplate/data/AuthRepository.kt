@@ -3,17 +3,21 @@ package com.aasoftware.redplate.data
 import androidx.fragment.app.Fragment
 import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.domain.User
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseUser
 
 class AuthRepository(private val source: AuthService){
 
-    fun googleLogin(fragment: Fragment){
+    /** Return the last signed in Google account. In case there is not any Google signed in account,
+     * send an intent to [fragment] which asks the user which Google account to use. */
+    fun googleLogin(fragment: Fragment): GoogleSignInAccount?{
         val googleAccount = source.getLastGoogleSignedInAccountOrNull(fragment)
         if (googleAccount == null){
             source.requestGoogleLogIn(fragment)
         }
+        return googleAccount
     }
 
     fun firebaseLogin(email: String, password: String, onCompleteListener: OnCompleteListener<AuthResult>){
@@ -35,11 +39,13 @@ class AuthRepository(private val source: AuthService){
         source.uploadUserToFirestore(user, onCompleteListener)
     }
 
-    /** Remove the recently created firebase user if it couldn't be uploaded to Firestore */
-    fun removeLastFirebaseUser(user: User) = source.removeLastUserFromFirebase(user)
+    /** Remove the given firebase user */
+    fun removeFirebaseUser(user: FirebaseUser) = source.removeUserFromFirebase(user)
 
     /** Send recover password email to the given email if it exists */
     fun sendRecoverPasswordEmail(email: String, onComplete: OnCompleteListener<Void>) {
-        source.sendRecoverPasswordEmail(email, onComplete)
+        source.sendPasswordResetEmail(email, onComplete)
     }
+
+    fun loggedIn(): Boolean = source.currentUser() != null
 }

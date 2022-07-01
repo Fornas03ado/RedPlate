@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Widget.App.TextInputLayout" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="materialThemeOverlay">@style/ThemeOverlay.App.TextInputLayout</item>
         <item name="shapeAppearance">@style/ShapeAppearance.App.SmallComponent</item>
@@ -29,5 +30,10 @@
     <style name="TextAppearance.App.Caption" parent="TextAppearance.MaterialComponents.Caption">
         <item name="fontFamily">sans-serif-condensed</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
+    </style>
+
+    <style name="Widget.Theme.RedPlate.ButtonBar.Fullscreen" parent="">
+        <item name="android:background">@color/black_overlay</item>
+        <item name="android:buttonBarStyle">?android:attr/buttonBarStyle</item>
     </style>
 </resources>

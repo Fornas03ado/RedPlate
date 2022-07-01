@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.LinearInterpolator
+import androidx.annotation.IdRes
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -17,11 +19,9 @@ import com.aasoftware.redplate.domain.AuthErrorType
 import com.aasoftware.redplate.domain.AuthErrorType.*
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.ui.LoadingDialogFragment
-import com.aasoftware.redplate.util.defaultDrawables
-import com.aasoftware.redplate.util.errorDrawables
-import com.aasoftware.redplate.util.makeIndefiniteSnackbar
-import com.aasoftware.redplate.util.makeLongSnackbar
+import com.aasoftware.redplate.util.*
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 
 // TODO: Handle animations
 class CreateAccountFragment : Fragment() {
@@ -59,7 +59,17 @@ class CreateAccountFragment : Fragment() {
                 onCreateAccountClicked()
             }
             goToLoginButton.setOnClickListener {
-                findNavController().navigate(R.id.action_create_account_fragment_to_login_fragment)
+                navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment)
+            }
+            bannerDismissAction.setOnClickListener {
+                showBanner(false)
+                currentErrorType = null
+            }
+            bannerLoginAction.setOnClickListener {
+                val args = Bundle().apply {
+                    putString(BundleConstants.EMAIL_KEY, emailInput.text.toString())
+                }
+                navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment, args)
             }
 
             /* ON TEXT CHANGED LISTENERS:
@@ -77,6 +87,7 @@ class CreateAccountFragment : Fragment() {
                     emailInput.defaultDrawables(R.drawable.ic_email_24)
                     currentErrorType = null
                     errorSnackbar?.dismiss()
+                    showBanner(false)
                 }
             }
             passwordInput.doOnTextChanged { _, _, _, _ ->
@@ -103,11 +114,25 @@ class CreateAccountFragment : Fragment() {
         viewModel.uiAuthState.observe(viewLifecycleOwner){ state ->
             when(state.progress){
                 ERROR -> {
-                    makeLongSnackbar(R.string.create_account_error_msg)
+                    if(state.error is FirebaseAuthUserCollisionException){
+                        /* User is already registered in Firebase database.
+                          Show a banner that asks the user if he wants to log in */
+                        currentErrorType = EMAIL_ERROR
+                        binding.emailInput.errorDrawables(R.drawable.ic_email_24)
+                        showBanner(true)
+                    } else {
+                        // Unknown error. Show a snackbar reporting the error
+                        makeLongSnackbar(R.string.create_account_error_msg)
+                    }
                     viewModel.onResultReceived()
                 }
                 SUCCESS -> {
-                    viewModel.onAuthenticationFinished()
+                    // Account has been created (FirebaseAuth) and uploaded (Firestore) successfully
+                    val args = Bundle().apply {
+                        putString(BundleConstants.EMAIL_KEY, binding.usernameInput.text.toString())
+                        putString(BundleConstants.PASSWORD_KEY, binding.passwordInput.text.toString())
+                    }
+                    navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment)
                 }
                 else -> Unit
             }
@@ -120,6 +145,18 @@ class CreateAccountFragment : Fragment() {
                 loadingDialog?.dismiss()
                 loadingDialog = null
             }
+        }
+    }
+
+    /** Shows the "email already registered" banner when [show] is true. Hides it otherwise */
+    private fun showBanner(show: Boolean) {
+        // TODO: Handle in and out animations
+        if(show){
+            binding.banner.visibility = View.VISIBLE
+            binding.redplateLabel.visibility = View.INVISIBLE
+        } else {
+            binding.banner.visibility = View.GONE
+            binding.redplateLabel.visibility = View.VISIBLE
         }
     }
 
@@ -166,6 +203,38 @@ class CreateAccountFragment : Fragment() {
         }
 
         currentErrorType = error.type
+    }
+
+    /** Clear layout and navigate via a provided action id */
+    private fun navigateWithActionId(@IdRes navAction: Int, args: Bundle? = null) {
+        clearLayout()
+        findNavController().navigate(navAction, args)
+    }
+
+    /** Remove any error message, restore input texts default state: default drawables and empty text */
+    private fun clearLayout() {
+        with(binding){
+            when(currentErrorType){
+                EMAIL_ERROR -> {
+                    emailInput.defaultDrawables(R.drawable.ic_email_24)
+                    showBanner(false)
+                }
+                USERNAME_ERROR -> {
+                    usernameInput.defaultDrawables(R.drawable.ic_person_24)
+                }
+                PASSWORD_ERROR -> {
+                    passwordInput.defaultDrawables(R.drawable.ic_key_24)
+                    confirmPasswordInput.defaultDrawables(R.drawable.ic_key_24)
+                }
+                else -> Unit
+            }
+            errorSnackbar?.dismiss()
+            currentErrorType = null
+            usernameInput.setText("")
+            emailInput.setText("")
+            passwordInput.setText("")
+            confirmPasswordInput.setText("")
+        }
     }
 
 }

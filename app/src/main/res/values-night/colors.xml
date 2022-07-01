@@ -12,4 +12,5 @@
     <color name="label_hint_color">#CACACA</color>
     <color name="panel_color">#222222</color>
     <color name="input_drawable_tint">@color/input_hint_color</color>
+    <color name="banner_stroke_color">#3E3E3E</color>
 </resources>
