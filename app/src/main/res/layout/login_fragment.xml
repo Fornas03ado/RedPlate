@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_image"
     android:clickable="false"
-    tools:context=".ui.createAccountLogin.LoginFragment">
+    tools:context=".ui.authenticationUI.LoginFragment">
 
     <TextView
         android:id="@+id/redplate_label"

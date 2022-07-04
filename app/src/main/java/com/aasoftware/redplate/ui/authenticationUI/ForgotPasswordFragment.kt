@@ -1,4 +1,4 @@
-package com.aasoftware.redplate.ui.createAccountLogin
+package com.aasoftware.redplate.ui.authenticationUI
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,12 +9,10 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
-import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.databinding.FragmentForgotPasswordBinding
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.ui.LoadingDialogFragment
-import com.aasoftware.redplate.util.Credentials.isVaildEmail
+import com.aasoftware.redplate.util.Credentials.isValidEmail
 import com.aasoftware.redplate.util.defaultDrawables
 import com.aasoftware.redplate.util.errorDrawables
 import com.aasoftware.redplate.util.makeIndefiniteSnackbar
@@ -23,9 +21,7 @@ import com.google.android.material.snackbar.Snackbar
 class ForgotPasswordFragment : Fragment() {
 
     /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
-    private val viewModel: AuthViewModel by activityViewModels{
-        AuthViewModel.Factory(AuthRepository(AuthService()))
-    }
+    private val viewModel: AuthViewModel by activityViewModels()
     private lateinit var binding: FragmentForgotPasswordBinding
     /* The progress bar dialog */
     private var loadingDialog: LoadingDialogFragment? = null
@@ -42,7 +38,7 @@ class ForgotPasswordFragment : Fragment() {
 
         /* Attempt to send a reset email */
         binding.continueButton.setOnClickListener {
-            if(binding.emailInput.text.toString().isVaildEmail()){
+            if(binding.emailInput.text.toString().isValidEmail()){
                 viewModel.recoverPassword(binding.emailInput.text.toString())
             } else {
                 binding.emailInput.errorDrawables(R.drawable.ic_email_24)

@@ -1,6 +1,8 @@
-package com.aasoftware.redplate.ui.createAccountLogin
+package com.aasoftware.redplate.ui.authenticationUI
 
+import android.content.IntentSender
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,18 +11,13 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
-import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.databinding.LoginFragmentBinding
-import com.aasoftware.redplate.domain.AuthErrorType
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
+import com.aasoftware.redplate.domain.GoogleSignInFailedException
 import com.aasoftware.redplate.ui.LoadingDialogFragment
-import com.aasoftware.redplate.util.Credentials.isVaildEmail
-import com.aasoftware.redplate.util.defaultDrawables
-import com.aasoftware.redplate.util.errorDrawables
-import com.aasoftware.redplate.util.makeIndefiniteSnackbar
+import com.aasoftware.redplate.util.*
+import com.aasoftware.redplate.util.Credentials.isValidEmail
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -29,9 +26,7 @@ import com.google.android.material.snackbar.Snackbar
 class LoginFragment : Fragment() {
 
     /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
-    private val viewModel: AuthViewModel by activityViewModels{
-        AuthViewModel.Factory(AuthRepository(AuthService()))
-    }
+    private val viewModel: AuthViewModel by activityViewModels()
     /* Binding that contains a reference to Login fragment views */
     private lateinit var binding: LoginFragmentBinding
     /* The snackbar that shows the input error */
@@ -60,11 +55,16 @@ class LoginFragment : Fragment() {
                     viewModel.onAuthenticationFinished()
                 }
                 ERROR -> {
-                    errorSnackbar = makeIndefiniteSnackbar(R.string.invalid_credentials)
-                    binding.emailInput.errorDrawables(R.drawable.ic_email_24)
-                    binding.passwordInput.errorDrawables(R.drawable.ic_key_24)
-                    error = true
-                    viewModel.onResultReceived()
+                    if(state.error != null && state.error is GoogleSignInFailedException){
+                        makeLongSnackbar(state.error.message!!)
+                        viewModel.onResultReceived()
+                    } else {
+                        errorSnackbar = makeIndefiniteSnackbar(R.string.invalid_credentials)
+                        binding.emailInput.errorDrawables(R.drawable.ic_email_24)
+                        binding.passwordInput.errorDrawables(R.drawable.ic_key_24)
+                        error = true
+                        viewModel.onResultReceived()
+                    }
                 }
                 else -> Unit
             }
@@ -75,7 +75,7 @@ class LoginFragment : Fragment() {
         with(binding){
 
             loginButton.setOnClickListener {
-                val emailValid = emailInput.text.toString().isVaildEmail()
+                val emailValid = emailInput.text.toString().isValidEmail()
                 val passValid = passwordInput.text.toString().isNotEmpty()
                 if (emailValid && passValid){
                     viewModel.requestFirebaseLogin(emailInput.text.toString(),
@@ -91,7 +91,25 @@ class LoginFragment : Fragment() {
             // com.google.android.gms.common.SignInButton could also be used, but a custom
             // button design was used in this case to fit the app color scheme
             googleLoginButton.setOnClickListener {
-                viewModel.requestGoogleLogin(this@LoginFragment)
+                viewModel.requestGoogleLogin(requireActivity()){ result ->
+                    if (result.isSuccessful){
+                        try {
+                            startIntentSenderForResult(
+                                result.result.pendingIntent.intentSender, FirebaseConstants.GOOGLE_LOGIN_RC,
+                                null, 0, 0, 0, null)
+                        } catch (e: IntentSender.SendIntentException) {
+                            Log.e(DEBUG_TAG, "Couldn't start One Tap UI: ${e.localizedMessage}")
+                            makeLongSnackbar(R.string.couldnt_open_google_signin_error)
+                        }
+                    } else {
+                        // No saved credentials found. Launch the One Tap sign-up flow, or
+                        // do nothing and continue presenting the signed-out UI.
+                        result.exception!!.localizedMessage?.let { msg ->
+                            Log.d(DEBUG_TAG, msg)
+                            makeLongSnackbar(R.string.no_google_accounts_found_error)
+                        }
+                    }
+                }
             }
 
             goToCreateAccountButton.setOnClickListener {

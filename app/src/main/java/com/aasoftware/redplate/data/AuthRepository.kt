@@ -1,25 +1,28 @@
 package com.aasoftware.redplate.data
 
+import android.app.Activity
 import androidx.fragment.app.Fragment
 import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.domain.User
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.auth.api.identity.SignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.FirebaseFirestore
 
-class AuthRepository(private val source: AuthService){
+class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, oneTapClient: SignInClient) {
 
-    /** Return the last signed in Google account. In case there is not any Google signed in account,
-     * send an intent to [fragment] which asks the user which Google account to use. */
-    fun googleLogin(fragment: Fragment): GoogleSignInAccount?{
-        val googleAccount = source.getLastGoogleSignedInAccountOrNull(fragment)
-        if (googleAccount == null){
-            source.requestGoogleLogIn(fragment)
-        }
-        return googleAccount
+    private val source = AuthService(auth, firestore, oneTapClient)
+
+    /** Launch a google login dialog. Send the result to [activity] with request code 0 */
+    fun launchGoogleLogin(activity: Activity, onCompleteListener: OnCompleteListener<BeginSignInResult>){
+        source.requestGoogleLogIn(activity, onCompleteListener)
     }
 
+    /** Perform a login attempt in firebase auth. Result is observed by [onCompleteListener] */
     fun firebaseLogin(email: String, password: String, onCompleteListener: OnCompleteListener<AuthResult>){
         source.loginFirebaseAccount(email, password, onCompleteListener)
     }

@@ -50,4 +50,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="create_account_banner_message">The email you introduced is already registered.</string>
     <string name="dismiss">Dismiss</string>
+    <string name="error_while_signing_in">An error occurred while accessing the account</string>
+    <string name="unknown_error">An unknown error occurred</string>
+    <string name="couldnt_open_google_signin_error">Error: could\'nt open Google Sign In screen</string>
+    <string name="no_google_accounts_found_error">No Google accounts could be found</string>
 </resources>

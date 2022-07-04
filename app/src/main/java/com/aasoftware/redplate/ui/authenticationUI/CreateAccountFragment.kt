@@ -1,18 +1,15 @@
-package com.aasoftware.redplate.ui.createAccountLogin
+package com.aasoftware.redplate.ui.authenticationUI
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.LinearInterpolator
 import androidx.annotation.IdRes
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
-import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.databinding.CreateAccountFragmentBinding
 import com.aasoftware.redplate.domain.AuthError
 import com.aasoftware.redplate.domain.AuthErrorType
@@ -27,9 +24,7 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 class CreateAccountFragment : Fragment() {
 
     /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
-    private val viewModel: AuthViewModel by activityViewModels{
-        AuthViewModel.Factory(AuthRepository(AuthService()))
-    }
+    private val viewModel: AuthViewModel by activityViewModels()
     /* Object that contains the reference to CreateAccountFragment layout views */
     private lateinit var binding: CreateAccountFragmentBinding
     /* The error that is currently displayed or null if there´s no error */

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/login_fragment"
-        android:name="com.aasoftware.redplate.ui.createAccountLogin.LoginFragment"
+        android:name="com.aasoftware.redplate.ui.authenticationUI.LoginFragment"
         tools:layout="@layout/login_fragment" >
         <action
             android:id="@+id/action_login_fragment_to_create_account_fragment"
@@ -25,7 +25,7 @@
 
     <fragment
         android:id="@+id/create_account_fragment"
-        android:name="com.aasoftware.redplate.ui.createAccountLogin.CreateAccountFragment"
+        android:name="com.aasoftware.redplate.ui.authenticationUI.CreateAccountFragment"
         tools:layout="@layout/create_account_fragment" >
         <action
             android:id="@+id/action_create_account_fragment_to_login_fragment"
@@ -36,7 +36,7 @@
     </fragment>
     <fragment
         android:id="@+id/forgotPasswordFragment"
-        android:name="com.aasoftware.redplate.ui.createAccountLogin.ForgotPasswordFragment"
+        android:name="com.aasoftware.redplate.ui.authenticationUI.ForgotPasswordFragment"
         android:label="fragment_forgot_password"
         tools:layout="@layout/fragment_forgot_password" >
         <action
@@ -46,7 +46,7 @@
     </fragment>
     <fragment
         android:id="@+id/splashFragment"
-        android:name="com.aasoftware.redplate.ui.createAccountLogin.SplashFragment"
+        android:name="com.aasoftware.redplate.ui.authenticationUI.SplashFragment"
         android:label="fragment_splash"
         tools:layout="@layout/fragment_splash" >
         <action

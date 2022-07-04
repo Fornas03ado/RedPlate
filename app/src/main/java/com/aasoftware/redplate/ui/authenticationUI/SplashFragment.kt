@@ -1,29 +1,23 @@
-package com.aasoftware.redplate.ui.createAccountLogin
+package com.aasoftware.redplate.ui.authenticationUI
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
-import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.ui.MainActivity
 import com.aasoftware.redplate.util.DEBUG_TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
-    private val viewModel: AuthViewModel by viewModels{
-        AuthViewModel.Factory(AuthRepository(AuthService()))
-    }
+    private val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

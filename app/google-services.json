@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "857893155446",
+    "project_id": "redplate-349410",
+    "storage_bucket": "redplate-349410.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:857893155446:android:32e0c2a7e902630bb72557",
+        "android_client_info": {
+          "package_name": "com.aasoftware.redplate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "857893155446-oaoda9f2jfg2o98s5jtmbjuvp7dfk1b3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.aasoftware.redplate",
+            "certificate_hash": "171c13dffa3b71a6ea0cebfbc71b59f03009842a"
+          }
+        },
+        {
+          "client_id": "857893155446-6ds5a7a72173ptk6tc4msnaifjbm58jh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDM2FueB-B4mCl0rR9uJ0g8JiZJEbUjB14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "857893155446-6ds5a7a72173ptk6tc4msnaifjbm58jh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

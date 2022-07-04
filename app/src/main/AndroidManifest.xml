@@ -15,7 +15,7 @@
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
-            android:name=".ui.createAccountLogin.AuthActivity"
+            android:name=".ui.authenticationUI.AuthActivity"
             android:exported="true"
             android:screenOrientation="portrait">
             <intent-filter>

@@ -1,5 +1,7 @@
-package com.aasoftware.redplate.ui.createAccountLogin
+package com.aasoftware.redplate.ui.authenticationUI
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.Resources
 import android.util.Log
 import androidx.lifecycle.*
@@ -7,12 +9,18 @@ import com.aasoftware.redplate.R
 import com.aasoftware.redplate.data.AuthRepository
 import com.aasoftware.redplate.domain.*
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
-import com.aasoftware.redplate.util.Credentials.isVaildEmail
+import com.aasoftware.redplate.util.Credentials.isValidEmail
 import com.aasoftware.redplate.util.Credentials.isValidPassword
 import com.aasoftware.redplate.util.Credentials.isValidUsername
 import com.aasoftware.redplate.util.DEBUG_TAG
 import com.aasoftware.redplate.util.asUser
+import com.google.android.gms.auth.api.identity.BeginSignInResult
+import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.GoogleAuthProvider
 
 /** Shared viewModel for the authentication process: [CreateAccountFragment],
  * [LoginFragment] and [ForgotPasswordFragment] */
@@ -43,8 +51,8 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
 
     /** Check if the user has previously logged in via Google services.
      * If not, launch the Google sign in intent */
-    fun requestGoogleLogin(fragment: LoginFragment) {
-        authRepo.googleLogin(fragment)
+    fun requestGoogleLogin(activity: Activity, onCompleteListener: OnCompleteListener<BeginSignInResult>) {
+        authRepo.launchGoogleLogin(activity, onCompleteListener)
     }
 
     /** Attempts a Firebase login with the given credentials */
@@ -102,7 +110,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     }
 
     /** Returns an [AuthError] with the error message and [AuthErrorType] in case there's an error
-     * with the input. Returns null if there's no error */
+     * with the input or null if there's no error */
     fun validateInput(
         username: String, email: String, password: String, confirmPassword: String, resources: Resources
     ): AuthError?{
@@ -110,7 +118,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
             return AuthError(resources.getString(R.string.username_error_text),
                 AuthErrorType.USERNAME_ERROR
             )
-        } else if(!email.isVaildEmail()){
+        } else if(!email.isValidEmail()){
             return AuthError(resources.getString(R.string.email_error_text),
                 AuthErrorType.EMAIL_ERROR
             )
@@ -155,6 +163,40 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     fun checkLoggedIn() {
         _authFinished.value = loggedIn()
         Log.d(DEBUG_TAG, "User logged in: ${loggedIn()}")
+    }
+
+    fun onGoogleSignInResult(activity: Activity, oneTapClient: SignInClient, auth: FirebaseAuth, data: Intent) {
+        try {
+            val credential = oneTapClient.getSignInCredentialFromIntent(data)
+            val idToken = credential.googleIdToken
+            if (idToken != null) {
+                // Got an ID token from Google. Use it to authenticate
+                // with Firebase.
+                val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
+                auth.signInWithCredential(firebaseCredential)
+                    .addOnCompleteListener(activity) { task ->
+                        if (task.isSuccessful) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(DEBUG_TAG, "signInWithCredential: success")
+                            _uiAuthState.value = AuthenticationState(SUCCESS, null)
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(DEBUG_TAG, "signInWithCredential: failure", task.exception)
+                            // An error occurred while accessing the account
+                            val errorMsg = activity.getString(R.string.error_while_signing_in)
+                            _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
+                            }
+                        }
+            } else {
+                // An unknown error occurred
+                val errorMsg = activity.getString(R.string.unknown_error)
+                _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
+            }
+        } catch (e: ApiException) {
+            // An unknown error occurred
+            val errorMsg = activity.getString(R.string.unknown_error)
+            _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
+        }
     }
 
     /** Factory that builds [AuthViewModel] given an [AuthRepository] */
