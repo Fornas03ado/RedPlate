@@ -42,7 +42,7 @@ fun Fragment.makeIndefiniteSnackbar(@StringRes msgId: Int) = makeIndefiniteSnack
 /** Create a Snackbar with the given message */
 fun Fragment.makeIndefiniteSnackbar(msg: String) = Snackbar.make(requireView(), msg,
     Snackbar.LENGTH_INDEFINITE)
-    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.input_stroke_color))
+    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.panel_color))
     .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.input_text_color))
     .setTextColor(ContextCompat.getColor(requireContext(), R.color.input_text_color))
     .apply {setAction(R.string.ok){dismiss()}; show()}
@@ -52,7 +52,7 @@ fun Fragment.makeLongSnackbar(@StringRes msgId: Int) = makeLongSnackbar(getStrin
 /** Create a Snackbar with the given message */
 fun Fragment.makeLongSnackbar(msg: String) = Snackbar.make(requireView(), msg,
     Snackbar.LENGTH_LONG)
-    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.input_stroke_color))
+    .setBackgroundTint(ContextCompat.getColor(requireContext(), R.color.panel_color))
     .setActionTextColor(ContextCompat.getColor(requireContext(), R.color.input_text_color))
     .setTextColor(ContextCompat.getColor(requireContext(), R.color.input_text_color))
     .apply {show()}

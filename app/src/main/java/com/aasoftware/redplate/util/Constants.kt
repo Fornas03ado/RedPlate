@@ -8,7 +8,7 @@ object FirebaseConstants {
     const val USERS_PATH = "users"
 
     /* Other constants */
-    const val GOOGLE_LOGIN_RC = 0
+    const val GOOGLE_LOGIN_RC: Int = 1
 }
 
 object BundleConstants {

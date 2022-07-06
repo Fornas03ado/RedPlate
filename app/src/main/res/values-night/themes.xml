@@ -12,7 +12,6 @@
         <item name="android:statusBarColor" tools:targetApi="l">@color/background_color</item>
         <!-- Customize your theme here. -->
         <item name="backgroundColor">@color/background_color</item>
-        <item name="fontFamily">sans-serif-condensed-light</item>
     </style>
 
     <style name="ThemeOverlay.RedPlate.FullscreenContainer" parent="">

@@ -122,12 +122,14 @@ class CreateAccountFragment : Fragment() {
                     viewModel.onResultReceived()
                 }
                 SUCCESS -> {
+                    viewModel.onResultReceived()
                     // Account has been created (FirebaseAuth) and uploaded (Firestore) successfully
                     val args = Bundle().apply {
                         putString(BundleConstants.EMAIL_KEY, binding.usernameInput.text.toString())
                         putString(BundleConstants.PASSWORD_KEY, binding.passwordInput.text.toString())
                     }
-                    navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment)
+                    // TODO: Notify user has to verify then navigate via Dialog action
+                    navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment, args)
                 }
                 else -> Unit
             }

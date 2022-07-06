@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.res.Resources
 import android.util.Log
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.aasoftware.redplate.R
 import com.aasoftware.redplate.data.AuthRepository
@@ -14,10 +15,8 @@ import com.aasoftware.redplate.util.Credentials.isValidPassword
 import com.aasoftware.redplate.util.Credentials.isValidUsername
 import com.aasoftware.redplate.util.DEBUG_TAG
 import com.aasoftware.redplate.util.asUser
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.auth.api.identity.SignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
@@ -49,10 +48,13 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
      *  null when logged state is being checked at the beginning*/
     val authFinished: LiveData<Boolean?> get() = _authFinished
 
+    /** Last user that was successfully logged in. Even if it is currently not */
+    var lastUser: FirebaseUser? = null
+
     /** Check if the user has previously logged in via Google services.
      * If not, launch the Google sign in intent */
-    fun requestGoogleLogin(activity: Activity, onCompleteListener: OnCompleteListener<BeginSignInResult>) {
-        authRepo.launchGoogleLogin(activity, onCompleteListener)
+    fun requestGoogleLogin(fragment: Fragment) {
+        authRepo.requestGoogleLogin(fragment)
     }
 
     /** Attempts a Firebase login with the given credentials */
@@ -60,12 +62,24 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         _loading.value = true
         authRepo.firebaseLogin(email, password){ task ->
             if (task.isSuccessful){
-                _uiAuthState.value = AuthenticationState(SUCCESS, null)
+                val user = authRepo.currentFirebaseUser()
+                lastUser = user
+                if (user != null && authRepo.isEmailVerified(user)){
+                    _uiAuthState.value = AuthenticationState(SUCCESS, null)
+                } else {
+                    _uiAuthState.value = AuthenticationState(ERROR, UserNotVerifiedException())
+                    signOut()
+                }
             } else {
-                _uiAuthState.value = AuthenticationState(ERROR, task.exception)
+                _uiAuthState.value = AuthenticationState(ERROR, InvalidCredentialsException())
             }
             _loading.value = false
         }
+    }
+
+    /** Sign out the current user if it exists */
+    private fun signOut() {
+        authRepo.signOut()
     }
 
     /** Attempt to create account with the given parameters. The result will be sent to
@@ -75,7 +89,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         authRepo.firebaseCreateAccount(email, password){ authTask ->
             if (authTask.isSuccessful){
                 /* Account was created successfully */
-                val firebaseUser = authRepo.firebaseUser()!!
+                val firebaseUser = authRepo.currentFirebaseUser()!!
                 val user = firebaseUser.asUser(username)
                 /* Upload the account to Firebase Firestore. This might be a WorkManager task
                  as it must be completed */
@@ -101,7 +115,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         }
     }
 
-    /** Deletes the given user from Firebase Authentication */
+    /** Deletes the given [user] from Firebase Authentication */
     private fun deleteFirebaseUser(user: FirebaseUser) = authRepo.removeFirebaseUser(user)
 
     /** Restore the [_uiAuthState] value to show [NONE] after the result has been processed */
@@ -156,47 +170,55 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         _authFinished.value = true
     }
 
-    /** Helper function for [checkLoggedIn]. Returns if any user is logged in */
+    /** Helper function for [checkAuthState]. Returns if any user is logged in */
     private fun loggedIn(): Boolean = authRepo.loggedIn()
 
-    /** Checks if any user is currently logged in Firebase. Update [authFinished] consequently */
-    fun checkLoggedIn() {
-        _authFinished.value = loggedIn()
+    /** Checks if any user is currently logged in Firebase and if it is verified. Update [authFinished] consequently */
+    fun checkAuthState() {
+        _authFinished.value = loggedIn() && isEmailVerified(authRepo.currentFirebaseUser())
         Log.d(DEBUG_TAG, "User logged in: ${loggedIn()}")
     }
 
-    fun onGoogleSignInResult(activity: Activity, oneTapClient: SignInClient, auth: FirebaseAuth, data: Intent) {
+    /** Handle Google sign in result from the receiver activity */
+    fun onGoogleSignInResult(activity: Activity, auth: FirebaseAuth, data: Intent) {
+        val signInTask = GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
-            val credential = oneTapClient.getSignInCredentialFromIntent(data)
-            val idToken = credential.googleIdToken
-            if (idToken != null) {
-                // Got an ID token from Google. Use it to authenticate
-                // with Firebase.
-                val firebaseCredential = GoogleAuthProvider.getCredential(idToken, null)
-                auth.signInWithCredential(firebaseCredential)
-                    .addOnCompleteListener(activity) { task ->
-                        if (task.isSuccessful) {
-                            // Sign in success, update UI with the signed-in user's information
-                            Log.d(DEBUG_TAG, "signInWithCredential: success")
-                            _uiAuthState.value = AuthenticationState(SUCCESS, null)
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            Log.w(DEBUG_TAG, "signInWithCredential: failure", task.exception)
-                            // An error occurred while accessing the account
-                            val errorMsg = activity.getString(R.string.error_while_signing_in)
-                            _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
-                            }
-                        }
-            } else {
-                // An unknown error occurred
-                val errorMsg = activity.getString(R.string.unknown_error)
-                _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
+            // Google sign in was successful
+            _loading.value = true
+            val account = signInTask.getResult(ApiException::class.java)
+            Log.d(DEBUG_TAG, "firebaseAuthWithGoogle: id = ${account.idToken}")
+
+            // Authenticate in Firebase auth with the Google account
+            val credential = GoogleAuthProvider.getCredential(account.idToken, null)
+            auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
+                if (authTask.isSuccessful) {
+                    // Firebase sign in was successful. Upload the user to Firestore.
+                    val user = User(auth.currentUser!!.uid, account.displayName!!, auth.currentUser!!.email!!, account.photoUrl)
+                    authRepo.uploadUserToFirestore(user)
+                    _uiAuthState.value = AuthenticationState(SUCCESS, null)
+                } else {
+                    // Google sign in failed, update UI appropriately
+                    Log.w(DEBUG_TAG, "Error authenticating in Firebase: ${authTask.exception?.localizedMessage}")
+                    _uiAuthState.value = AuthenticationState(ERROR,
+                        GoogleSignInFailedException(activity.getString(R.string.error_while_signing_in)))
+                    _loading.value = false
+                }
             }
-        } catch (e: ApiException) {
-            // An unknown error occurred
-            val errorMsg = activity.getString(R.string.unknown_error)
-            _uiAuthState.value = AuthenticationState(ERROR, GoogleSignInFailedException(errorMsg))
+        } catch (e: ApiException){
+            // Google sign in failed, update UI appropriately
+            Log.w(DEBUG_TAG, "Error authenticating with Google")
+            _uiAuthState.value = AuthenticationState(ERROR,
+                GoogleSignInFailedException(activity.getString(R.string.error_while_signing_in)))
+            _loading.value = false
         }
+    }
+
+    /** @return true if [user] is not null and its email is verified, false otherwise */
+    private fun isEmailVerified(user: FirebaseUser?): Boolean {
+        if (user == null){
+            return false
+        }
+        return authRepo.isEmailVerified(user)
     }
 
     /** Factory that builds [AuthViewModel] given an [AuthRepository] */

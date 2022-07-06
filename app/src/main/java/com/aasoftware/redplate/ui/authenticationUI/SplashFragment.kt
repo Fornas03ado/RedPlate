@@ -28,7 +28,7 @@ class SplashFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.checkLoggedIn()
+        viewModel.checkAuthState()
         viewModel.viewModelScope.launch {
             delay(1000)
             viewModel.authFinished.observe(viewLifecycleOwner){ loggedIn ->

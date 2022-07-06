@@ -12,21 +12,14 @@ import androidx.fragment.app.DialogFragment
 import com.aasoftware.redplate.R
 
 
-class LoadingDialogFragment(private var message: String): DialogFragment(R.layout.loading_dialog) {
-    init {
-        isCancelable = false
-    }
-    fun changeMessage(s: String){
-        message = s
-        view?.findViewById<TextView>(R.id.process_text)?.text = s
-    }
+class VerifyEmailDialogFragment(private val onClickListener: View.OnClickListener): DialogFragment(R.layout.verify_email_dialog) {
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view: View = inflater.inflate(R.layout.loading_dialog, container, false)
+        val view: View = inflater.inflate(R.layout.verify_email_dialog, container, false)
         // Set transparent background and no title
         // Set transparent background and no title
         if (dialog != null && dialog!!.window != null) {
@@ -38,6 +31,10 @@ class LoadingDialogFragment(private var message: String): DialogFragment(R.layou
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<TextView>(R.id.process_text)?.text = message
+        isCancelable = true
+        view.findViewById<TextView>(R.id.dismiss_action)?.setOnClickListener {
+            this.dismiss()
+        }
+        view.findViewById<TextView>(R.id.verify_action)?.setOnClickListener(onClickListener)
     }
 }

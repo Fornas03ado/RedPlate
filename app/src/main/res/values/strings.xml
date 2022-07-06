@@ -54,4 +54,13 @@
     <string name="unknown_error">An unknown error occurred</string>
     <string name="couldnt_open_google_signin_error">Error: could\'nt open Google Sign In screen</string>
     <string name="no_google_accounts_found_error">No Google accounts could be found</string>
+    <string name="google_signin_client_id" translatable="false">857893155446-uh4froahs9rr5buv9f1m0tv0hsnp9m3i.apps.googleusercontent.com</string>
+    <string name="email_not_verified_title">Email not verified</string>
+    <string name="email_not_verified_body_text">In order to access Redplate, you must verify your account email</string>
+    <string name="verify">Verify</string>
+    <string name="ignore">Ignore</string>
+    <string name="waiting_for_server">Waiting for server…</string>
+    <string name="verification_email_sent">Verification email sent</string>
+    <string name="error_sending_verification_email">Error sending verification email</string>
+    <string name="credentials_introduced_not_valid">Credentials not valid. Make sure the email is right and the password is not empty.</string>
 </resources>

@@ -1,25 +1,22 @@
 package com.aasoftware.redplate.data
 
-import android.app.Activity
 import androidx.fragment.app.Fragment
 import com.aasoftware.redplate.data.remote.AuthService
 import com.aasoftware.redplate.domain.User
-import com.google.android.gms.auth.api.identity.BeginSignInResult
-import com.google.android.gms.auth.api.identity.SignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
-class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, oneTapClient: SignInClient) {
+class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, googleSignInClient: GoogleSignInClient) {
 
-    private val source = AuthService(auth, firestore, oneTapClient)
+    private val source = AuthService(auth, firestore, googleSignInClient)
 
-    /** Launch a google login dialog. Send the result to [activity] with request code 0 */
-    fun launchGoogleLogin(activity: Activity, onCompleteListener: OnCompleteListener<BeginSignInResult>){
-        source.requestGoogleLogIn(activity, onCompleteListener)
+    /** Launch a google login dialog. Send the result to the activity with request code 0 */
+    fun requestGoogleLogin(fragment: Fragment){
+        source.requestGoogleLogIn(fragment)
     }
 
     /** Perform a login attempt in firebase auth. Result is observed by [onCompleteListener] */
@@ -34,8 +31,8 @@ class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, oneTapCli
         source.createFirebaseAccount(email, password, onCompleteListener)
     }
 
-    /** Get the current user (the one that is logged in) or null if no user is logged in */
-    fun firebaseUser(): FirebaseUser? = source.currentUser()
+    /** Get the current Firebase Auth user (the one that is logged in) or null if no user is logged in */
+    fun currentFirebaseUser(): FirebaseUser? = source.currentUser()
 
     /** Upload the given user to the firebase database */
     fun uploadUser(user: User, onCompleteListener: OnCompleteListener<Void>) {
@@ -50,5 +47,20 @@ class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, oneTapCli
         source.sendPasswordResetEmail(email, onComplete)
     }
 
+    /** Whether the user is logged in */
     fun loggedIn(): Boolean = source.currentUser() != null
+
+    fun isEmailVerified(user: FirebaseUser): Boolean {
+        return source.isEmailVerified(user)
+    }
+
+    /** Create the given [user] document in Firestore. Update its fields if it already exists */
+    fun uploadUserToFirestore(user: User) {
+        source.uploadUserToFirestore(user){}
+    }
+
+    /** Log out the current user if exists */
+    fun signOut() {
+        source.signOut()
+    }
 }

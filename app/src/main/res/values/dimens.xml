@@ -37,5 +37,8 @@
     <dimen name="splash_logo_size">150dp</dimen>
     <dimen name="banner_stroke_width">1dp</dimen>
     <dimen name="banner_action_text_size">18sp</dimen>
+    <dimen name="verify_dialog_title_text_size">24sp</dimen>
+    <dimen name="verify_dialog_body_text_size">20sp</dimen>
+    <dimen name="verify_dialog_action_text_size">16sp</dimen>
 
 </resources>
