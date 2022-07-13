@@ -5,42 +5,32 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
+import com.aasoftware.redplate.Injection
 import com.aasoftware.redplate.databinding.ActivityAuthBinding
-import com.aasoftware.redplate.ui.MainActivity
+import com.aasoftware.redplate.ui.mainUI.MainActivity
 import com.aasoftware.redplate.util.DEBUG_TAG
-import com.aasoftware.redplate.util.FirebaseConstants
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
+import com.aasoftware.redplate.util.FirestoreConstants
 
 
 class AuthActivity : AppCompatActivity(){
 
-    private lateinit var binding: ActivityAuthBinding
+    /** Object that contains the reference to [AuthActivity] layout views */
+    private var _binding: ActivityAuthBinding? = null
+    // This property is only valid between onCreateView() and onDestroyView().
+    private val binding get() = _binding!!
 
-    private lateinit var googleClient: GoogleSignInClient
-    private lateinit var auth: FirebaseAuth
+    private val auth = Injection.remoteRepository!!
 
+    /** Authentication UI shared ViewModel */
     private val viewModel: AuthViewModel by viewModels{
-        AuthViewModel.Factory(AuthRepository(auth, FirebaseFirestore.getInstance(), googleClient))
+        AuthViewModel.Factory(auth)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        binding = ActivityAuthBinding.inflate(layoutInflater)
+        _binding = ActivityAuthBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(getString(R.string.default_web_client_id))
-            .requestEmail()
-            .build()
-        googleClient = GoogleSignIn.getClient(this, gso)
-        auth = FirebaseAuth.getInstance()
 
         // Check if user is logged in. In that case, navigate to MainActivity
         viewModel.authFinished.observe(this){ navigate ->
@@ -78,10 +68,15 @@ class AuthActivity : AppCompatActivity(){
         Log.d(DEBUG_TAG, "onActivityResult(): request code $requestCode")
         //Snackbar.make(binding.root, "onActivityResult(): RC = $requestCode", Snackbar.LENGTH_LONG).show()
         when (requestCode) {
-            FirebaseConstants.GOOGLE_LOGIN_RC -> {
+            FirestoreConstants.GOOGLE_LOGIN_RC -> {
                 viewModel.onGoogleSignInResult(this, auth, data!!)
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

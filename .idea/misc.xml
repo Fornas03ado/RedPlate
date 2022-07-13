@@ -8,6 +8,8 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/edittext_unfocused.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/input_bg.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/input_panel_bg.xml" value="0.1875" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/loading_dialog_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-night/verify_dialog_background.xml" value="0.259" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable-notnight/background_image.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background.xml" value="0.171" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/background_image.xml" value="0.1985" />
@@ -16,6 +18,12 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/cursor_drawable.xml" value="0.107" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/edittext_focused.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/edittext_unfocused.xml" value="0.1985" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/expand_less-48px.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/expand_less.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/expand_more.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/expand_more_.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/heart_filled.xml" value="0.23" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/heart_outline.xml" value="0.23" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_add_20.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_add_24.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/ic_error_24.xml" value="0.185" />
@@ -36,18 +44,35 @@
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_bg.xml" value="0.1985" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/input_panel_bg.xml" value="0.259" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/loading_dialog_background.xml" value="0.228" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/post_panel_bg.xml" value="0.23" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/post_separator_bottom_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/post_separator_top_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/post_separatortop_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/read_chat.xml" value="0.259" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/shape_rect.xml" value="0.107" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/share.xml" value="0.23" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/tab_layout_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/toolbar_background.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/unread_chat.xml" value="0.259" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/drawable/verify_dialog_background.xml" value="0.259" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_auth.xml" value="0.13645833333333332" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_main.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/activity_presentation.xml" value="0.25364583333333335" />
-        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/create_account_fragment.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/create_account_fragment.xml" value="0.25" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/cursor_drawable.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/dialog_account_created.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/edit_profile_fragment.xml" value="0.16018518518518518" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_chats_overview.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_create_account.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_dashboard.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_forgot_password.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_home.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_notifications.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_profile.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_search.xml" value="0.2064814814814815" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_splash.xml" value="0.25364583333333335" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/fragment_view_pager.xml" value="0.1" />
+        <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/item_post.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/loading_dialog.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/login_fragment.xml" value="0.25364583333333335" />
         <entry key="..\:/Users/adolf/AndroidStudioProjects/RedPlate/app/src/main/res/layout/verify_email_dialog.xml" value="0.25364583333333335" />
@@ -60,5 +85,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.1" />
+      </ProjectState>
+    </option>
   </component>
 </project>

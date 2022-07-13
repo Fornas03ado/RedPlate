@@ -1,20 +1,18 @@
-package com.aasoftware.redplate.ui.search
+package com.aasoftware.redplate.ui.mainUI.chatUI
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import com.aasoftware.redplate.R
 import com.aasoftware.redplate.databinding.FragmentSearchBinding
 
-class SearchFragment : Fragment() {
+class ChatsOverviewFragment : Fragment() {
 
+    /** Object that contains the reference to [ChatsOverviewFragment] layout views */
     private var _binding: FragmentSearchBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    // This property is only valid between onCreateView() and onDestroyView().
     private val binding get() = _binding!!
 
     override fun onCreateView(
@@ -22,17 +20,11 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(this)[SearchViewModel::class.java]
-
+        // val dashboardViewModel =
+        // ViewModelProvider(this)[SearchViewModel::class.java]
         _binding = FragmentSearchBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.textDashboard
-        dashboardViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
-        }
-        return root
+        return binding.root
     }
 
     override fun onDestroyView() {

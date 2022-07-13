@@ -1,6 +1,7 @@
 package com.aasoftware.redplate.ui.authenticationUI
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -10,12 +11,14 @@ import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.databinding.CreateAccountFragmentBinding
+import com.aasoftware.redplate.databinding.ActivityAuthBinding
+import com.aasoftware.redplate.databinding.FragmentCreateAccountBinding
 import com.aasoftware.redplate.domain.AuthError
 import com.aasoftware.redplate.domain.AuthErrorType
 import com.aasoftware.redplate.domain.AuthErrorType.*
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
-import com.aasoftware.redplate.ui.LoadingDialogFragment
+import com.aasoftware.redplate.ui.AccountCreatedDialog
+import com.aasoftware.redplate.ui.LoadingDialog
 import com.aasoftware.redplate.util.*
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
@@ -23,22 +26,24 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 // TODO: Handle animations
 class CreateAccountFragment : Fragment() {
 
-    /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
+    /** Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
     private val viewModel: AuthViewModel by activityViewModels()
-    /* Object that contains the reference to CreateAccountFragment layout views */
-    private lateinit var binding: CreateAccountFragmentBinding
-    /* The error that is currently displayed or null if there´s no error */
+    /** Object that contains the reference to [CreateAccountFragment] layout views */
+    private var _binding: FragmentCreateAccountBinding? = null
+    // This property is only valid between onCreateView() and onDestroyView().
+    private val binding get() = _binding!!
+    /** The error that is currently displayed or null if there´s no error */
     private var currentErrorType: AuthErrorType? = null
-    /* The progress bar dialog */
-    private var loadingDialog: LoadingDialogFragment? = null
-    /* The snackbar that shows the input error */
+    /** The progress bar dialog */
+    private var loadingDialog: LoadingDialog? = null
+    /** The snackbar that shows the input error */
     private var errorSnackbar: Snackbar? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = CreateAccountFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentCreateAccountBinding.inflate(inflater, container, false)
 
         addListeners()
         observeViewModel()
@@ -61,10 +66,11 @@ class CreateAccountFragment : Fragment() {
                 currentErrorType = null
             }
             bannerLoginAction.setOnClickListener {
-                val args = Bundle().apply {
-                    putString(BundleConstants.EMAIL_KEY, emailInput.text.toString())
-                }
-                navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment, args)
+                viewModel.navEmail = binding.emailInput.text.toString()
+                viewModel.navPassword = binding.passwordInput.text.toString()
+                Log.d(DEBUG_TAG, "before navigation: {${viewModel.navEmail}, ${viewModel.navPassword}}")
+                navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment)
+                Log.d(DEBUG_TAG, "after navigation: {${viewModel.navEmail}, ${viewModel.navPassword}}")
             }
 
             /* ON TEXT CHANGED LISTENERS:
@@ -123,20 +129,23 @@ class CreateAccountFragment : Fragment() {
                 }
                 SUCCESS -> {
                     viewModel.onResultReceived()
-                    // Account has been created (FirebaseAuth) and uploaded (Firestore) successfully
-                    val args = Bundle().apply {
-                        putString(BundleConstants.EMAIL_KEY, binding.usernameInput.text.toString())
-                        putString(BundleConstants.PASSWORD_KEY, binding.passwordInput.text.toString())
+                    // Account has been created (FirebaseAuth) and uploaded (Firestore) successfully.
+                    // Notify user.
+                    var dialog: AccountCreatedDialog? = null
+                    dialog = AccountCreatedDialog{
+                        dialog?.dismiss()
+                        navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment)
                     }
-                    // TODO: Notify user has to verify then navigate via Dialog action
-                    navigateWithActionId(R.id.action_create_account_fragment_to_login_fragment, args)
+                    viewModel.navEmail = binding.emailInput.text.toString()
+                    viewModel.navPassword = binding.passwordInput.text.toString()
+                    dialog.show(requireActivity().supportFragmentManager, null)
                 }
                 else -> Unit
             }
         }
         viewModel.loading.observe(viewLifecycleOwner){ loading ->
             if (loading){
-                loadingDialog = LoadingDialogFragment(getString(R.string.creating_account))
+                loadingDialog = LoadingDialog(getString(R.string.creating_account))
                 loadingDialog?.show(requireActivity().supportFragmentManager, null)
             } else {
                 loadingDialog?.dismiss()
@@ -203,9 +212,9 @@ class CreateAccountFragment : Fragment() {
     }
 
     /** Clear layout and navigate via a provided action id */
-    private fun navigateWithActionId(@IdRes navAction: Int, args: Bundle? = null) {
+    private fun navigateWithActionId(@IdRes navAction: Int) {
         clearLayout()
-        findNavController().navigate(navAction, args)
+        findNavController().navigate(navAction)
     }
 
     /** Remove any error message, restore input texts default state: default drawables and empty text */
@@ -232,6 +241,11 @@ class CreateAccountFragment : Fragment() {
             passwordInput.setText("")
             confirmPasswordInput.setText("")
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

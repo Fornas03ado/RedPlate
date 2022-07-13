@@ -3,15 +3,17 @@ package com.aasoftware.redplate.data.remote
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.aasoftware.redplate.domain.User
-import com.aasoftware.redplate.util.FirebaseConstants
+import com.aasoftware.redplate.util.FirestoreConstants
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 
-class AuthService(
+class RemoteService(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore,
     private val googleSignInClient: GoogleSignInClient) {
@@ -37,11 +39,11 @@ class AuthService(
     /** Upload [user] to the Firestore database */
     fun uploadUserToFirestore(user: User, onCompleteListener: OnCompleteListener<Void>){
         val map = HashMap<String, Any>().apply {
-            put(FirebaseConstants.USERNAME_KEY, user.username)
-            put(FirebaseConstants.EMAIL_KEY, user.email)
-            put(FirebaseConstants.UID_KEY, user.id)
+            put(FirestoreConstants.USERNAME_KEY, user.username)
+            put(FirestoreConstants.EMAIL_KEY, user.email)
+            put(FirestoreConstants.UID_KEY, user.id)
         }
-        firestore.collection(FirebaseConstants.USERS_PATH).document(user.id)
+        firestore.collection(FirestoreConstants.USERS_PATH).document(user.id)
             .set(map)
             .addOnCompleteListener(onCompleteListener)
     }
@@ -55,7 +57,7 @@ class AuthService(
     fun requestGoogleLogIn(fragment: Fragment){
         /* Send the google sign in intent, which displays a menu with all the accounts */
         val signInIntent: Intent = googleSignInClient.signInIntent
-        fragment.requireActivity().startActivityForResult(signInIntent, FirebaseConstants.GOOGLE_LOGIN_RC)
+        fragment.requireActivity().startActivityForResult(signInIntent, FirestoreConstants.GOOGLE_LOGIN_RC)
     }
 
     /** Return true if the user has verified its email */
@@ -67,5 +69,14 @@ class AuthService(
     fun signOut() {
         auth.signOut()
     }
+
+    /** Attempt a FirebaseAuth sign in with the given [credential]. */
+    fun signInWithCredential(credential: AuthCredential, onComplete: OnCompleteListener<AuthResult>) {
+        auth.signInWithCredential(credential).addOnCompleteListener(onComplete)
+    }
+
+    /** Get the posts reference for the given user id */
+    fun userPostsReference(id: String): DocumentReference =
+        firestore.collection(FirestoreConstants.POSTS_PATH).document(id)
 
 }

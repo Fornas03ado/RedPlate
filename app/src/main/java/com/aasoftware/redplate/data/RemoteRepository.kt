@@ -1,18 +1,19 @@
 package com.aasoftware.redplate.data
 
 import androidx.fragment.app.Fragment
-import com.aasoftware.redplate.data.remote.AuthService
+import com.aasoftware.redplate.data.remote.RemoteService
 import com.aasoftware.redplate.domain.User
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 
-class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, googleSignInClient: GoogleSignInClient) {
+class RemoteRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, googleSignInClient: GoogleSignInClient) {
 
-    private val source = AuthService(auth, firestore, googleSignInClient)
+    private val source = RemoteService(auth, firestore, googleSignInClient)
 
     /** Launch a google login dialog. Send the result to the activity with request code 0 */
     fun requestGoogleLogin(fragment: Fragment){
@@ -50,6 +51,9 @@ class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, googleSig
     /** Whether the user is logged in */
     fun loggedIn(): Boolean = source.currentUser() != null
 
+    /** @return the current Firebase user, null if no user is logged in */
+    fun currentUser(): FirebaseUser? = source.currentUser()
+
     fun isEmailVerified(user: FirebaseUser): Boolean {
         return source.isEmailVerified(user)
     }
@@ -62,5 +66,10 @@ class AuthRepository(auth: FirebaseAuth, firestore: FirebaseFirestore, googleSig
     /** Log out the current user if exists */
     fun signOut() {
         source.signOut()
+    }
+
+    /** Attempt a FirebaseAuth sign in with the given [credential]. */
+    fun signInWithCredential(credential: AuthCredential, onComplete: OnCompleteListener<AuthResult>) {
+        source.signInWithCredential(credential, onComplete)
     }
 }

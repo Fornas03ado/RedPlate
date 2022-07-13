@@ -11,12 +11,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.ui.MainActivity
+import com.aasoftware.redplate.ui.mainUI.MainActivity
 import com.aasoftware.redplate.util.DEBUG_TAG
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashFragment : Fragment() {
+    /** ViewModel that allows to check if the user is authenticated */
     private val viewModel: AuthViewModel by activityViewModels()
 
     override fun onCreateView(

@@ -17,7 +17,7 @@
     <dimen name="title_1">52sp</dimen>
     <dimen name="title_2">30sp</dimen>
     <dimen name="splash_text_size">38sp</dimen>
-    <dimen name="banner_text_size">18sp</dimen>
+    <dimen name="banner_body_text_size">20sp</dimen>
     <dimen name="button_text_size">20sp</dimen>
 
     <!-- Dimens for input texts. -->
@@ -32,13 +32,27 @@
     <dimen name="button_padding_vertical">6dp</dimen>
     <dimen name="back_button_width">140dp</dimen>
 
+    <!-- Verify Account Dialog, shares dimens with Loading Dialog -->
+    <dimen name="verify_dialog_title_text_size">24sp</dimen>
+    <dimen name="verify_dialog_body_text_size">20sp</dimen>
+    <dimen name="verify_dialog_action_text_size">16sp</dimen>
+
     <!-- Dimens for other staff. -->
     <dimen name="separator_width">1dp</dimen>
     <dimen name="splash_logo_size">150dp</dimen>
     <dimen name="banner_stroke_width">1dp</dimen>
-    <dimen name="banner_action_text_size">18sp</dimen>
-    <dimen name="verify_dialog_title_text_size">24sp</dimen>
-    <dimen name="verify_dialog_body_text_size">20sp</dimen>
-    <dimen name="verify_dialog_action_text_size">16sp</dimen>
+    <dimen name="banner_action_text_size">16sp</dimen>
+    <dimen name="toolbar_elevation">3dp</dimen>
+    <dimen name="toolbar_text_size">22sp</dimen>
+    <dimen name="toolbar_margin">16dp</dimen>
+    <dimen name="toolbar_icon_width">54dp</dimen>
+    <dimen name="post_profile_image_size">52dp</dimen>
+    <dimen name="post_item_button_size">34dp</dimen>
+    <dimen name="post_description_text_size">16sp</dimen>
+    <dimen name="post_image_max_height">250dp</dimen>
+    <dimen name="post_item_timestamp_textsize">14sp</dimen>
+    <dimen name="post_item_profilename_textsize">18sp</dimen>
+    <dimen name="post_item_elevation">3dp</dimen>
+
 
 </resources>

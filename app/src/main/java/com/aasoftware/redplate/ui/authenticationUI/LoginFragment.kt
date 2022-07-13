@@ -1,23 +1,24 @@
 package com.aasoftware.redplate.ui.authenticationUI
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.databinding.LoginFragmentBinding
+import com.aasoftware.redplate.databinding.FragmentForgotPasswordBinding
+import com.aasoftware.redplate.databinding.FragmentLoginBinding
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.domain.GoogleSignInFailedException
 import com.aasoftware.redplate.domain.InvalidCredentialsException
 import com.aasoftware.redplate.domain.UserNotVerifiedException
-import com.aasoftware.redplate.ui.LoadingDialogFragment
-import com.aasoftware.redplate.ui.VerifyEmailDialogFragment
+import com.aasoftware.redplate.ui.LoadingDialog
+import com.aasoftware.redplate.ui.VerifyEmailDialog
 import com.aasoftware.redplate.util.*
 import com.aasoftware.redplate.util.Credentials.isValidEmail
 import com.google.android.material.snackbar.Snackbar
@@ -28,92 +29,46 @@ class LoginFragment : Fragment() {
 
     /** Shared viewModel for CreateAccount, Login and ForgotPassword fragments, owned by [AuthActivity] */
     private val viewModel: AuthViewModel by activityViewModels()
-    /** Binding that contains a reference to Login fragment views */
-    private lateinit var binding: LoginFragmentBinding
+    /** Object that contains the reference to [LoginFragment] layout views */
+    private var _binding: FragmentLoginBinding? = null
+    // This property is only valid between onCreateView() and onDestroyView().
+    private val binding get() = _binding!!
     /** The snackbar that shows the input error */
     private var errorSnackbar: Snackbar? = null
     /** The progress bar dialog */
-    private var loadingDialog: LoadingDialogFragment? = null
+    private var loadingDialog: LoadingDialog? = null
     /** Whether an error is currently displayed */
     private var error = false
     /** The verify email dialog */
-    private var verifyDialog: VerifyEmailDialogFragment? = null
-
-    //val args: NavArgs by navArgs()
+    private var verifyDialog: VerifyEmailDialog? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = LoginFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentLoginBinding.inflate(inflater, container, false)
 
         addListeners()
         observeViewModel()
 
-        // TODO: Not working yet
-        // Read email and password from arguments.
-        binding.emailInput.setText(arguments?.getString(BundleConstants.EMAIL_KEY) ?: "")
-        binding.passwordInput.setText(arguments?.getString(BundleConstants.PASSWORD_KEY) ?: "")
-
         return binding.root
     }
 
-    /** Observe [viewModel]'s LiveData */
-    private fun observeViewModel() {
-        viewModel.uiAuthState.observe(viewLifecycleOwner){ state ->
-            when(state.progress){
-                SUCCESS -> {
-                    viewModel.onAuthenticationFinished()
-                }
-                ERROR -> {
-                    when(state.error){
-                        null -> makeLongSnackbar(R.string.unknown_error)
-                        is InvalidCredentialsException -> {
-                            errorSnackbar = makeIndefiniteSnackbar(R.string.invalid_credentials)
-                            binding.emailInput.errorDrawables(R.drawable.ic_email_24)
-                            binding.passwordInput.errorDrawables(R.drawable.ic_key_24)
-                            error = true
-                        }
-                        is GoogleSignInFailedException -> {
-                            makeLongSnackbar(state.error.message!!)
-                            viewModel.onResultReceived()
-                        }
-                        is UserNotVerifiedException -> {
-                            // Show verification dialog
-                            verifyDialog = VerifyEmailDialogFragment{
-                                verifyDialog?.dismiss()
-                                verifyDialog = null
-                                loadingDialog = LoadingDialogFragment(getString(R.string.sending_email))
-                                loadingDialog?.show(requireActivity().supportFragmentManager, null)
-                                viewModel.lastUser?.sendEmailVerification()?.addOnCompleteListener { task ->
-                                    if (task.isSuccessful){
-                                        loadingDialog?.dismiss()
-                                        loadingDialog = null
-                                        makeLongSnackbar(R.string.verification_email_sent)
-                                    } else {
-                                        loadingDialog?.dismiss()
-                                        loadingDialog = null
-                                        makeLongSnackbar(R.string.error_sending_verification_email)
-                                    }
-                                }
-                            }
-                            verifyDialog?.show(requireActivity().supportFragmentManager, null)
-                        }
-                    }
-                    viewModel.onResultReceived()
-                }
-                // Currently, there are no other relevant UI states
-                else -> Unit
-            }
+    override fun onStart() {
+        super.onStart()
+        // Write email and password fields if required
+        val email = viewModel.navEmail
+        val password = viewModel.navPassword
+        // Log.d(DEBUG_TAG, "onStart(): {$email, $password}")
+        if (email != null){
+            binding.emailInput.setText(email, TextView.BufferType.EDITABLE)
+            viewModel.navEmail = null
         }
-        viewModel.loading.observe(viewLifecycleOwner){ loading ->
-            if (loading){
-                loadingDialog = LoadingDialogFragment(getString(R.string.waiting_for_server))
-                loadingDialog?.show(childFragmentManager, null)
-            } else {
-                loadingDialog?.dismiss()
-            }
+        if (password != null){
+            binding.passwordInput.setText(password, TextView.BufferType.EDITABLE)
+            viewModel.navPassword = null
         }
+        // Log.d(DEBUG_TAG, "EditText values: {${binding.emailInput.text}, ${binding.passwordInput.text}}")
     }
 
     /** Add the needed listeners to the UI such as click and text changed listeners */
@@ -152,6 +107,7 @@ class LoginFragment : Fragment() {
             }
 
             forgotPasswordButton.setOnClickListener {
+                viewModel.navEmail = emailInput.text.toString()
                 navigateWithActionId(R.id.action_login_fragment_to_forgotPasswordFragment)
             }
 
@@ -174,10 +130,69 @@ class LoginFragment : Fragment() {
         }
     }
 
+    /** Observe [viewModel]'s LiveData */
+    private fun observeViewModel() {
+        viewModel.uiAuthState.observe(viewLifecycleOwner){ state ->
+            when(state.progress){
+                SUCCESS -> {
+                    viewModel.onAuthenticationFinished()
+                }
+                ERROR -> {
+                    when(state.error){
+                        null -> makeLongSnackbar(R.string.unknown_error)
+                        is InvalidCredentialsException -> {
+                            errorSnackbar = makeIndefiniteSnackbar(R.string.invalid_credentials)
+                            binding.emailInput.errorDrawables(R.drawable.ic_email_24)
+                            binding.passwordInput.errorDrawables(R.drawable.ic_key_24)
+                            error = true
+                        }
+                        is GoogleSignInFailedException -> {
+                            makeLongSnackbar(state.error.message!!)
+                            viewModel.onResultReceived()
+                        }
+                        is UserNotVerifiedException -> {
+                            // Show verification dialog
+                            verifyDialog = VerifyEmailDialog{
+                                verifyDialog?.dismiss()
+                                verifyDialog = null
+                                loadingDialog = LoadingDialog(getString(R.string.sending_email))
+                                loadingDialog?.show(requireActivity().supportFragmentManager, null)
+                                viewModel.lastUser?.sendEmailVerification()?.addOnCompleteListener { task ->
+                                    if (task.isSuccessful){
+                                        loadingDialog?.dismiss()
+                                        loadingDialog = null
+                                        makeLongSnackbar(R.string.verification_email_sent)
+                                    } else {
+                                        loadingDialog?.dismiss()
+                                        loadingDialog = null
+                                        makeLongSnackbar(R.string.error_sending_verification_email)
+                                    }
+                                }
+                            }
+                            verifyDialog?.show(requireActivity().supportFragmentManager, null)
+                        }
+                    }
+                    viewModel.onResultReceived()
+                }
+                // Currently, there are no other relevant UI states
+                else -> Unit
+            }
+        }
+        viewModel.loading.observe(viewLifecycleOwner){ loading ->
+            if (loading){
+                loadingDialog = LoadingDialog(getString(R.string.waiting_for_server))
+                loadingDialog?.show(childFragmentManager, null)
+            } else {
+                loadingDialog?.dismiss()
+                loadingDialog = null
+            }
+        }
+    }
+
     /** Clear layout and navigate via a provided action id */
-    private fun navigateWithActionId(@IdRes navAction: Int, args: Bundle? = null) {
+    private fun navigateWithActionId(@IdRes navAction: Int) {
         clearLayout()
-        findNavController().navigate(navAction, args)
+        findNavController().navigate(navAction)
     }
 
     /** Remove any error message, restore input texts default state: default drawables and empty text */
@@ -192,11 +207,16 @@ class LoginFragment : Fragment() {
             }
 
             // Empty the input text
-            emailInput.setText("")
-            passwordInput.setText("")
+            emailInput.setText("", TextView.BufferType.EDITABLE)
+            passwordInput.setText("", TextView.BufferType.EDITABLE)
             loadingDialog?.dismiss()
             verifyDialog?.dismiss()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }

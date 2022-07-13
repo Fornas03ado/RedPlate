@@ -9,9 +9,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/Theme.RedPlate">
+        android:theme="@style/Theme.RedPlate"
+        android:name=".RedplateApplication">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.mainUI.MainActivity"
             android:exported="false"
             android:screenOrientation="portrait"/>
         <activity

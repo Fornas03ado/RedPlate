@@ -38,4 +38,6 @@
     <color name="black_overlay">#66000000</color>
     <color name="banner_text_color">@color/input_text_color</color>
     <color name="banner_stroke_color">#D4D4D4</color>
+    <color name="material_red">#FF2A2A</color>
+    <color name="description_text_color">@color/label_hint_color</color>
 </resources>

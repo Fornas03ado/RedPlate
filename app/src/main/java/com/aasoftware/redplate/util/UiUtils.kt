@@ -19,10 +19,8 @@ fun hideSoftKeyboard(fragment: Fragment) {
 
 /** Set the default non-error drawable to the edit text */
 fun EditText.defaultDrawables(@DrawableRes drawableId: Int){
-    val tint = ContextCompat.getColor(this.context, R.color.input_drawable_tint)
     setCompoundDrawablesRelativeWithIntrinsicBounds(
-        ContextCompat.getDrawable(this.context, drawableId)!!
-            .apply { setTint(tint) },
+        ContextCompat.getDrawable(this.context, drawableId),
         null, null, null
     )
 }
@@ -31,7 +29,7 @@ fun EditText.errorDrawables(@DrawableRes drawableId: Int){
     val tint = ContextCompat.getColor(this.context, R.color.error_color)
     val errorDrawable = ContextCompat.getDrawable(this.context, R.drawable.ic_error_24)
     setCompoundDrawablesRelativeWithIntrinsicBounds(
-        ContextCompat.getDrawable(this.context, drawableId)!!
+        ContextCompat.getDrawable(this.context, drawableId)!!.mutate()
             .apply { setTint(tint) },
         null, errorDrawable, null
     )

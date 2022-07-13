@@ -57,10 +57,15 @@
     <string name="google_signin_client_id" translatable="false">857893155446-uh4froahs9rr5buv9f1m0tv0hsnp9m3i.apps.googleusercontent.com</string>
     <string name="email_not_verified_title">Email not verified</string>
     <string name="email_not_verified_body_text">In order to access Redplate, you must verify your account email</string>
+    <string name="account_created_body_text">A verification email has been sent. You must verify your account in order to be able to log in.</string>
     <string name="verify">Verify</string>
     <string name="ignore">Ignore</string>
     <string name="waiting_for_server">Waiting for server…</string>
     <string name="verification_email_sent">Verification email sent</string>
     <string name="error_sending_verification_email">Error sending verification email</string>
     <string name="credentials_introduced_not_valid">Credentials not valid. Make sure the email is right and the password is not empty.</string>
+    <string name="account_created">Account created</string>
+    <string name="my_chats">My chats</string>
+    <string name="sample_text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed vitae tellus enim. Praesent at diam in dui luctus posuere. Fusce nibh neque, pellentesque id justo ut, auctor finibus orci. Donec tortor diam, vulputate ut nibh sit amet, vehicula auctor augue. Quisque eleifend nisi vitae iaculis venenatis.</string>
+    <string name="now">Now</string>
 </resources>

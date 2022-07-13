@@ -7,7 +7,7 @@ import android.util.Log
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.*
 import com.aasoftware.redplate.R
-import com.aasoftware.redplate.data.AuthRepository
+import com.aasoftware.redplate.data.RemoteRepository
 import com.aasoftware.redplate.domain.*
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
 import com.aasoftware.redplate.util.Credentials.isValidEmail
@@ -17,13 +17,11 @@ import com.aasoftware.redplate.util.DEBUG_TAG
 import com.aasoftware.redplate.util.asUser
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 
-/** Shared viewModel for the authentication process: [CreateAccountFragment],
- * [LoginFragment] and [ForgotPasswordFragment] */
-class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
+/** Shared viewModel that will handle the authentication business logic. */
+class AuthViewModel(private val remoteRepo: RemoteRepository) : ViewModel() {
 
     /** Private mutable liva data for [uiAuthState] */
     private val _uiAuthState = MutableLiveData(AuthenticationState(NONE, null))
@@ -51,20 +49,29 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     /** Last user that was successfully logged in. Even if it is currently not */
     var lastUser: FirebaseUser? = null
 
+    /* Regular arguments and SafeArgs are not willing to work for some reason, so I am in
+    * in need of using ViewModel variables instead to communicate between fragments */
+    var navEmail: String? = null
+    var navPassword: String? = null
+
+    init {
+        Log.d(DEBUG_TAG, "AuthViewModel init")
+    }
+
     /** Check if the user has previously logged in via Google services.
      * If not, launch the Google sign in intent */
     fun requestGoogleLogin(fragment: Fragment) {
-        authRepo.requestGoogleLogin(fragment)
+        remoteRepo.requestGoogleLogin(fragment)
     }
 
     /** Attempts a Firebase login with the given credentials */
     fun requestFirebaseLogin(email: String, password: String) {
         _loading.value = true
-        authRepo.firebaseLogin(email, password){ task ->
+        remoteRepo.firebaseLogin(email, password){ task ->
             if (task.isSuccessful){
-                val user = authRepo.currentFirebaseUser()
+                val user = remoteRepo.currentFirebaseUser()
                 lastUser = user
-                if (user != null && authRepo.isEmailVerified(user)){
+                if (user != null && remoteRepo.isEmailVerified(user)){
                     _uiAuthState.value = AuthenticationState(SUCCESS, null)
                 } else {
                     _uiAuthState.value = AuthenticationState(ERROR, UserNotVerifiedException())
@@ -79,21 +86,21 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
 
     /** Sign out the current user if it exists */
     private fun signOut() {
-        authRepo.signOut()
+        remoteRepo.signOut()
     }
 
     /** Attempt to create account with the given parameters. The result will be sent to
      * [_uiAuthState] so that it can be observed via [uiAuthState] */
     fun createAccount(username: String, email: String, password: String){
         _loading.value = true
-        authRepo.firebaseCreateAccount(email, password){ authTask ->
+        remoteRepo.firebaseCreateAccount(email, password){ authTask ->
             if (authTask.isSuccessful){
                 /* Account was created successfully */
-                val firebaseUser = authRepo.currentFirebaseUser()!!
+                val firebaseUser = remoteRepo.currentFirebaseUser()!!
                 val user = firebaseUser.asUser(username)
                 /* Upload the account to Firebase Firestore. This might be a WorkManager task
                  as it must be completed */
-                authRepo.uploadUser(user){ upload ->
+                remoteRepo.uploadUser(user){ upload ->
                     if (upload.isSuccessful){
                         _uiAuthState.value = AuthenticationState(SUCCESS, null)
                     } else {
@@ -116,7 +123,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     }
 
     /** Deletes the given [user] from Firebase Authentication */
-    private fun deleteFirebaseUser(user: FirebaseUser) = authRepo.removeFirebaseUser(user)
+    private fun deleteFirebaseUser(user: FirebaseUser) = remoteRepo.removeFirebaseUser(user)
 
     /** Restore the [_uiAuthState] value to show [NONE] after the result has been processed */
     fun onResultReceived(){
@@ -153,7 +160,7 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
      * with the result*/
     fun recoverPassword(email: String) {
         _loading.value = true
-        authRepo.sendRecoverPasswordEmail(email){ task ->
+        remoteRepo.sendRecoverPasswordEmail(email){ task ->
             if (task.isSuccessful){
                 _uiAuthState.value = AuthenticationState(SUCCESS, null)
             } else {
@@ -171,16 +178,16 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
     }
 
     /** Helper function for [checkAuthState]. Returns if any user is logged in */
-    private fun loggedIn(): Boolean = authRepo.loggedIn()
+    private fun loggedIn(): Boolean = remoteRepo.loggedIn()
 
     /** Checks if any user is currently logged in Firebase and if it is verified. Update [authFinished] consequently */
     fun checkAuthState() {
-        _authFinished.value = loggedIn() && isEmailVerified(authRepo.currentFirebaseUser())
+        _authFinished.value = loggedIn() && isEmailVerified(remoteRepo.currentFirebaseUser())
         Log.d(DEBUG_TAG, "User logged in: ${loggedIn()}")
     }
 
     /** Handle Google sign in result from the receiver activity */
-    fun onGoogleSignInResult(activity: Activity, auth: FirebaseAuth, data: Intent) {
+    fun onGoogleSignInResult(activity: Activity, remote: RemoteRepository, data: Intent) {
         val signInTask = GoogleSignIn.getSignedInAccountFromIntent(data)
         try {
             // Google sign in was successful
@@ -190,11 +197,11 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
 
             // Authenticate in Firebase auth with the Google account
             val credential = GoogleAuthProvider.getCredential(account.idToken, null)
-            auth.signInWithCredential(credential).addOnCompleteListener { authTask ->
+            remote.signInWithCredential(credential){ authTask ->
                 if (authTask.isSuccessful) {
                     // Firebase sign in was successful. Upload the user to Firestore.
-                    val user = User(auth.currentUser!!.uid, account.displayName!!, auth.currentUser!!.email!!, account.photoUrl)
-                    authRepo.uploadUserToFirestore(user)
+                    val user = User(remote.currentUser()!!.uid, account.displayName!!, remote.currentUser()!!.email!!, account.photoUrl)
+                    remoteRepo.uploadUserToFirestore(user)
                     _uiAuthState.value = AuthenticationState(SUCCESS, null)
                 } else {
                     // Google sign in failed, update UI appropriately
@@ -218,15 +225,16 @@ class AuthViewModel(private val authRepo: AuthRepository) : ViewModel() {
         if (user == null){
             return false
         }
-        return authRepo.isEmailVerified(user)
+        return remoteRepo.isEmailVerified(user)
     }
 
-    /** Factory that builds [AuthViewModel] given an [AuthRepository] */
-    class Factory(private val authRepo: AuthRepository) : ViewModelProvider.Factory{
+    /** Factory that builds [AuthViewModel] given an [RemoteRepository].
+     * @param remoteRepo: the [RemoteRepository] for the ViewModel to use. */
+    class Factory(private val remoteRepo: RemoteRepository) : ViewModelProvider.Factory{
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             if (modelClass.isAssignableFrom(AuthViewModel::class.java)) {
                 @Suppress("UNCHECKED_CAST")
-                return AuthViewModel(authRepo) as T
+                return AuthViewModel(remoteRepo) as T
             }
             throw IllegalArgumentException("Unknown ViewModel class")
         }

@@ -5,13 +5,15 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.aasoftware.redplate.R
+import com.aasoftware.redplate.databinding.FragmentCreateAccountBinding
 import com.aasoftware.redplate.databinding.FragmentForgotPasswordBinding
 import com.aasoftware.redplate.domain.AuthenticationProgress.*
-import com.aasoftware.redplate.ui.LoadingDialogFragment
+import com.aasoftware.redplate.ui.LoadingDialog
 import com.aasoftware.redplate.util.Credentials.isValidEmail
 import com.aasoftware.redplate.util.defaultDrawables
 import com.aasoftware.redplate.util.errorDrawables
@@ -20,13 +22,17 @@ import com.google.android.material.snackbar.Snackbar
 
 class ForgotPasswordFragment : Fragment() {
 
-    /* Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
+    /** Shared viewModel for CreateAccount, Login and ForgotPassword fragments */
     private val viewModel: AuthViewModel by activityViewModels()
-    private lateinit var binding: FragmentForgotPasswordBinding
-    /* The progress bar dialog */
-    private var loadingDialog: LoadingDialogFragment? = null
-    /* The snackbar that contains the input error */
+    /** Object that contains the reference to [ForgotPasswordFragment] layout views */
+    private var _binding: FragmentForgotPasswordBinding? = null
+    // This property is only valid between onCreateView() and onDestroyView().
+    private val binding get() = _binding!!
+    /** The progress bar dialog */
+    private var loadingDialog: LoadingDialog? = null
+    /** The snackbar that contains the input error */
     private var snackbar: Snackbar? = null
+    /** Whether an error is being displayed */
     private var error = false
 
     /** Add listeners and livedata observers */
@@ -34,7 +40,7 @@ class ForgotPasswordFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentForgotPasswordBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentForgotPasswordBinding.inflate(layoutInflater, container, false)
 
         /* Attempt to send a reset email */
         binding.continueButton.setOnClickListener {
@@ -82,7 +88,7 @@ class ForgotPasswordFragment : Fragment() {
         /* Observe the view model loading state */
         viewModel.loading.observe(viewLifecycleOwner){ loading ->
             if (loading){
-                loadingDialog = LoadingDialogFragment(getString(R.string.creating_account))
+                loadingDialog = LoadingDialog(getString(R.string.sending_email))
                 loadingDialog?.show(requireActivity().supportFragmentManager, null)
             } else {
                 loadingDialog?.dismiss()
@@ -91,5 +97,22 @@ class ForgotPasswordFragment : Fragment() {
         }
 
         return binding.root
+    }
+
+    override fun onStart() {
+        super.onStart()
+        // Login Fragment will save the email in the AuthViewModel navEmail variable
+        // The first time it is read, it will be non-null and will be written to improve
+        // user experience. Any other onStart cases the email will remain unchanged.
+        val email = viewModel.navEmail
+        if (email != null){
+            binding.emailInput.setText(email, TextView.BufferType.EDITABLE)
+            viewModel.navEmail = null
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }
